@@ -12,7 +12,7 @@ window.addEventListener("DOMContentLoaded", async () => {
   const anchor = mindarThree.addAnchor(0);
 
   const loader = new GLTFLoader();
-  loader.load("./assets/tablet.glb", (gltf) => {
+  loader.load("./assets/tablet2.glb", (gltf) => {
     const tablet = gltf.scene;
     tablet.scale.set(0.5, 0.5, 0.5);
     tablet.visible = false; // Ocultar hasta detectar el target
