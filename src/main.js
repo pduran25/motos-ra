@@ -11,7 +11,7 @@ window.addEventListener("DOMContentLoaded", async () => {
   const { renderer, scene, camera } = mindarThree;
   const anchor = mindarThree.addAnchor(0);
 
-  // ✅ Iluminación añadida
+  // ✅ Iluminación para visibilidad
   const ambientLight = new THREE.AmbientLight(0xffffff, 1);
   scene.add(ambientLight);
 
@@ -24,25 +24,35 @@ window.addEventListener("DOMContentLoaded", async () => {
   loader.load("./assets/tablet.glb", (gltf) => {
     const tablet = gltf.scene;
     tablet.scale.set(0.5, 0.5, 0.5);
+    tablet.visible = false;
     anchor.group.add(tablet);
+
+    // Mostrar/ocultar cuando se detecta el target
+    anchor.onTargetFound = () => {
+      tablet.visible = true;
+    };
+    anchor.onTargetLost = () => {
+      tablet.visible = false;
+    };
 
     // Crear video
     const video = document.createElement("video");
     video.src = "./assets/videomotor.mp4";
     video.crossOrigin = "anonymous";
     video.loop = true;
-    video.muted = false;
+    video.muted = true; // ✅ Importante para autoplay
     video.playsInline = true;
     video.setAttribute("preload", "auto");
 
-    video.addEventListener("canplaythrough", () => {
+    // Esperar a que el video esté listo
+    video.addEventListener("loadeddata", () => {
       const texture = new THREE.VideoTexture(video);
       texture.minFilter = THREE.LinearFilter;
       texture.magFilter = THREE.LinearFilter;
-      texture.format = THREE.RGBFormat;
+      texture.format = THREE.RGBAFormat;
 
       const geometry = new THREE.PlaneGeometry(0.8, 0.45);
-      const material = new THREE.MeshBasicMaterial({ map: texture });
+      const material = new THREE.MeshBasicMaterial({ map: texture, side: THREE.DoubleSide });
       const videoPlane = new THREE.Mesh(geometry, material);
       videoPlane.position.set(0, 0.65, 0.03);
       tablet.add(videoPlane);
