@@ -51,8 +51,8 @@ window.addEventListener("DOMContentLoaded", async () => {
       texture.magFilter = THREE.LinearFilter;
       texture.format = THREE.RGBAFormat;
     
-      // ✅ Geometría del video (doble de tamaño)
-      const geometry = new THREE.PlaneGeometry(1.6, 0.9);
+      // ✅ NUEVO tamaño: más grande (2.2 x 1.2)
+      const geometry = new THREE.PlaneGeometry(2.2, 1.2);
       const material = new THREE.MeshBasicMaterial({
         map: texture,
         side: THREE.DoubleSide,
@@ -61,20 +61,21 @@ window.addEventListener("DOMContentLoaded", async () => {
     
       const videoPlane = new THREE.Mesh(geometry, material);
     
-      // ✅ Asegurar que el plano esté por encima y bien visible
+      // ✅ Posición elevada sobre la tablet para visibilidad
       videoPlane.rotation.x = -Math.PI / 2;
-      videoPlane.position.set(0, 0.1, 0); // más alto para evitar intersección con tablet
+      videoPlane.position.set(0, 0.11, 0); // elevación ajustada
     
-      // ✅ Agregar un marco visual para saber que está el video
-      const frameGeometry = new THREE.PlaneGeometry(1.65, 0.95);
+      // ✅ Marco visual (un poco más grande que el video)
+      const frameGeometry = new THREE.PlaneGeometry(2.25, 1.25);
       const frameMaterial = new THREE.MeshBasicMaterial({
         color: 0x333333,
         side: THREE.DoubleSide
       });
       const framePlane = new THREE.Mesh(frameGeometry, frameMaterial);
       framePlane.rotation.x = -Math.PI / 2;
-      framePlane.position.set(0, 0.099, 0); // justo debajo del video
+      framePlane.position.set(0, 0.109, 0); // justo debajo del video
     
+      // Añadir a la tablet
       tablet.add(framePlane);
       tablet.add(videoPlane);
     
@@ -93,6 +94,7 @@ window.addEventListener("DOMContentLoaded", async () => {
         }
       });
     });
+    
     
   });
 
