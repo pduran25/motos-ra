@@ -21,7 +21,7 @@ window.addEventListener("DOMContentLoaded", async () => {
   const loader = new GLTFLoader();
   loader.load("./assets/tablet.glb", (gltf) => {
     const tablet = gltf.scene;
-    tablet.scale.set(0.01, 0.01, 0.01); // comienza pequeño
+    tablet.scale.set(0.01, 0.01, 0.01);
     tablet.rotation.set(Math.PI / 2, Math.PI, 0);
     tablet.position.set(0, 0.05, 0);
     tablet.visible = false;
@@ -35,69 +35,68 @@ window.addEventListener("DOMContentLoaded", async () => {
     video.playsInline = true;
     video.setAttribute("preload", "auto");
 
-    video.addEventListener("loadeddata", () => {
-      const texture = new THREE.VideoTexture(video);
-      texture.encoding = THREE.sRGBEncoding;
-      texture.minFilter = THREE.LinearFilter;
-      texture.magFilter = THREE.LinearFilter;
-      texture.format = THREE.RGBFormat;
+    const texture = new THREE.VideoTexture(video);
+    texture.encoding = THREE.sRGBEncoding;
 
-      const blackMaterial = new THREE.MeshBasicMaterial({ color: 0x000000 });
-      const geometry = new THREE.PlaneGeometry(2.2, 1.2);
-      const videoPlane = new THREE.Mesh(geometry, blackMaterial);
-      videoPlane.rotation.x = Math.PI / 2;
-      videoPlane.scale.x = -1;
-      videoPlane.position.set(0, 0.12, 0);
-      tablet.add(videoPlane);
+    const material = new THREE.MeshBasicMaterial({ 
+      map: texture, 
+      side: THREE.DoubleSide 
+    });
 
-      // Reemplazar material cuando el video esté listo para reproducirse
-      video.addEventListener("play", () => {
-        videoPlane.material = new THREE.MeshBasicMaterial({ map: texture, side: THREE.DoubleSide });
-      });
+    const geometry = new THREE.PlaneGeometry(2.2, 1.2);
+    const videoPlane = new THREE.Mesh(geometry, material);
+    videoPlane.rotation.x = Math.PI / 2;
+    videoPlane.scale.x = -1;
+    videoPlane.position.set(0, 0.12, 0);
+    tablet.add(videoPlane);
 
-      let animating = false;
-      let animationProgress = 0;
-      const targetScale = new THREE.Vector3(0.5, 0.5, 0.5);
-      const initialScale = new THREE.Vector3(0.01, 0.01, 0.01);
+    // Agrega fondo negro inicial (renderizado con mapa de video apagado)
+    texture.onUpdate = () => {
+      texture.needsUpdate = true;
+    };
 
-      const easeOutCubic = (t) => (--t) * t * t + 1;
+    let animating = false;
+    let animationProgress = 0;
+    const targetScale = new THREE.Vector3(0.5, 0.5, 0.5);
+    const initialScale = new THREE.Vector3(0.01, 0.01, 0.01);
 
-      anchor.onTargetFound = () => {
-        tablet.visible = true;
-        animationProgress = 0;
-        animating = true;
-        if (video.paused || video.ended) {
-          startBtn.style.display = "block";
-        }
-      };
+    const easeOutCubic = (t) => (--t) * t * t + 1;
 
-      anchor.onTargetLost = () => {
-        tablet.visible = false;
-        video.pause();
-        video.currentTime = 0;
+    anchor.onTargetFound = () => {
+      tablet.visible = true;
+      animationProgress = 0;
+      animating = true;
+      if (video.paused || video.ended) {
+        startBtn.style.display = "block";
+      }
+    };
+
+    anchor.onTargetLost = () => {
+      tablet.visible = false;
+      video.pause();
+      video.currentTime = 0;
+      startBtn.style.display = "none";
+    };
+
+    startBtn.addEventListener("click", async () => {
+      try {
+        await video.play();
+        video.muted = false;
         startBtn.style.display = "none";
-      };
+      } catch (err) {
+        alert("Toca nuevamente para iniciar el video.");
+        console.error(err);
+      }
+    });
 
-      startBtn.addEventListener("click", async () => {
-        try {
-          await video.play();
-          video.muted = false;
-          startBtn.style.display = "none";
-        } catch (err) {
-          alert("Toca nuevamente para iniciar el video.");
-          console.error(err);
-        }
-      });
-
-      renderer.setAnimationLoop(() => {
-        if (animating && animationProgress < 1) {
-          animationProgress += 0.02;
-          const eased = easeOutCubic(animationProgress);
-          tablet.scale.lerpVectors(initialScale, targetScale, eased);
-          tablet.rotation.z = Math.PI * (1 - eased);
-        }
-        renderer.render(scene, camera);
-      });
+    renderer.setAnimationLoop(() => {
+      if (animating && animationProgress < 1) {
+        animationProgress += 0.02;
+        const eased = easeOutCubic(animationProgress);
+        tablet.scale.lerpVectors(initialScale, targetScale, eased);
+        tablet.rotation.z = Math.PI * (1 - eased);
+      }
+      renderer.render(scene, camera);
     });
   });
 
