@@ -51,14 +51,25 @@ window.addEventListener("DOMContentLoaded", async () => {
       tablet.add(videoPlane);
 
       // Mostrar botón solo en móviles
-      const isMobile = /Mobi|Android/i.test(navigator.userAgent);
-      if (isMobile) {
-        startBtn.style.display = "block";
-        startBtn.addEventListener("click", () => {
-          video.play();
-          startBtn.style.display = "none";
-        });
-      }
+      const isMobile = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+
+if (isMobile) {
+  console.log("📱 Dispositivo móvil detectado");
+  startBtn.style.display = "block";
+
+  startBtn.addEventListener("click", () => {
+    video.play()
+      .then(() => {
+        console.log("▶️ Video reproducido");
+        startBtn.style.display = "none";
+      })
+      .catch((err) => {
+        console.error("❌ No se pudo reproducir el video:", err);
+        alert("No se puede reproducir el video automáticamente. Intenta tocar de nuevo.");
+      });
+  });
+}
+
 
       // En escritorio: click sobre el video
       if (!isMobile) {
