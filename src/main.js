@@ -1,10 +1,9 @@
-// src/main.js
-import { MindARThree } from 'mind-ar/dist/mindar-image-three.prod.js';
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 
 window.addEventListener("DOMContentLoaded", async () => {
-  const mindarThree = new MindARThree({
+  // ✅ Corregido: accede desde window.MINDAR.IMAGE
+  const mindarThree = new window.MINDAR.IMAGE.MindARThree({
     container: document.body,
     imageTargetSrc: "./target/moto.mind",
     maxTrack: 1
@@ -38,12 +37,13 @@ window.addEventListener("DOMContentLoaded", async () => {
     const geometry = new THREE.PlaneGeometry(0.8, 0.45);
     const material = new THREE.MeshBasicMaterial({ map: texture });
     const videoPlane = new THREE.Mesh(geometry, material);
-    videoPlane.position.set(0, 0.65, 0.03); // Posición ajustada sobre la tablet
+    videoPlane.position.set(0, 0.65, 0.03); // Ajuste visual
     tablet.add(videoPlane);
 
     let playing = false;
     videoPlane.userData.clickable = true;
 
+    // Interacción táctil/click
     document.body.addEventListener("click", (e) => {
       const mouse = new THREE.Vector2(
         (e.clientX / window.innerWidth) * 2 - 1,
