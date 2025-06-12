@@ -7,7 +7,7 @@ window.addEventListener("DOMContentLoaded", async () => {
 
   const mindarThree = new window.MINDAR.IMAGE.MindARThree({
     container: document.querySelector("#ar-container"),
-    imageTargetSrc: "./target/codigomoto.mind",
+    imageTargetSrc: "./target/codigo.mind",
     maxTrack: 1
   });
 
@@ -54,23 +54,31 @@ window.addEventListener("DOMContentLoaded", async () => {
     const initialScale = new THREE.Vector3(0.01, 0.01, 0.01);
     const easeOutCubic = (t) => (--t) * t * t + 1;
 
+    let targetHasBeenSeen = false;
+
     anchor.onTargetFound = () => {
       scanOverlay.style.display = "none";
       tablet.visible = true;
       animationProgress = 0;
       animating = true;
+      targetHasBeenSeen = true; // ✅ Marcamos que ya se vio por primera vez
       if (video.paused || video.ended) {
         startBtn.style.display = "block";
       }
     };
-
+  
     anchor.onTargetLost = () => {
-      scanOverlay.style.display = "flex";
       tablet.visible = false;
       video.pause();
       video.currentTime = 0;
       startBtn.style.display = "none";
+  
+      // ✅ Solo mostramos overlay si ya se vio una vez el target
+      if (targetHasBeenSeen) {
+        scanOverlay.style.display = "flex";
+      }
     };
+  
 
     startBtn.addEventListener("click", async () => {
       try {
