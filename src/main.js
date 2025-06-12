@@ -33,7 +33,7 @@ window.addEventListener("DOMContentLoaded", async () => {
     video.src = "./assets/videomotor.mp4";
     video.crossOrigin = "anonymous";
     video.loop = true;
-    video.muted = true; // autoplay garantizado
+    video.muted = false; // autoplay garantizado
     video.playsInline = true;
     video.setAttribute("preload", "auto");
 
