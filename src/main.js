@@ -11,12 +11,13 @@ window.addEventListener("DOMContentLoaded", async () => {
   const { renderer, scene, camera } = mindarThree;
   const anchor = mindarThree.addAnchor(0);
 
-  const ambientLight = new THREE.AmbientLight(0xffffff, 1);
-  scene.add(ambientLight);
-  const directionalLight = new THREE.DirectionalLight(0xffffff, 0.6);
-  directionalLight.position.set(0, 1, 1).normalize();
-  scene.add(directionalLight);
+  // Luz básica
+  scene.add(new THREE.AmbientLight(0xffffff, 1));
+  const light = new THREE.DirectionalLight(0xffffff, 0.5);
+  light.position.set(1, 2, 1);
+  scene.add(light);
 
+  // Cargar modelo
   const loader = new GLTFLoader();
   loader.load("./assets/tablet.glb", (gltf) => {
     const tablet = gltf.scene;
@@ -24,14 +25,15 @@ window.addEventListener("DOMContentLoaded", async () => {
     tablet.visible = false;
     anchor.group.add(tablet);
 
-    anchor.onTargetFound = () => { tablet.visible = true; };
-    anchor.onTargetLost = () => { tablet.visible = false; };
+    anchor.onTargetFound = () => (tablet.visible = true);
+    anchor.onTargetLost = () => (tablet.visible = false);
 
+    // Crear video
     const video = document.createElement("video");
     video.src = "./assets/videomotor.mp4";
     video.crossOrigin = "anonymous";
     video.loop = true;
-    video.muted = false; // puede reproducirse si hay interacción
+    video.muted = true; // autoplay garantizado
     video.playsInline = true;
     video.setAttribute("preload", "auto");
 
@@ -39,37 +41,26 @@ window.addEventListener("DOMContentLoaded", async () => {
 
     video.addEventListener("loadeddata", () => {
       const texture = new THREE.VideoTexture(video);
-      texture.minFilter = THREE.LinearFilter;
-      texture.magFilter = THREE.LinearFilter;
-      texture.format = THREE.RGBAFormat;
-
+      const material = new THREE.MeshBasicMaterial({
+        map: texture,
+        side: THREE.DoubleSide
+      });
       const geometry = new THREE.PlaneGeometry(2.2, 1.2);
-      const material = new THREE.MeshBasicMaterial({ map: texture, side: THREE.DoubleSide });
       const videoPlane = new THREE.Mesh(geometry, material);
       videoPlane.rotation.x = -Math.PI / 2;
-      videoPlane.position.set(0, 0.11, 0);
-
-      const frameGeometry = new THREE.PlaneGeometry(2.25, 1.25);
-      const frameMaterial = new THREE.MeshBasicMaterial({
-        color: 0x333333, side: THREE.DoubleSide
-      });
-      const framePlane = new THREE.Mesh(frameGeometry, frameMaterial);
-      framePlane.rotation.x = -Math.PI / 2;
-      framePlane.position.set(0, 0.109, 0);
-
-      tablet.add(framePlane);
+      videoPlane.position.set(0, 0.1, 0);
       tablet.add(videoPlane);
 
-      let playing = false;
-
-      if (/Mobi|Android/i.test(navigator.userAgent)) {
+      // Manejo móvil o desktop
+      const isMobile = /Mobi|Android/i.test(navigator.userAgent);
+      if (isMobile) {
         startBtn.style.display = "block";
         startBtn.addEventListener("click", () => {
           video.play();
-          playing = true;
           startBtn.style.display = "none";
         });
       } else {
+        // Click en escritorio
         document.body.addEventListener("click", (e) => {
           const mouse = new THREE.Vector2(
             (e.clientX / window.innerWidth) * 2 - 1,
@@ -79,8 +70,11 @@ window.addEventListener("DOMContentLoaded", async () => {
           raycaster.setFromCamera(mouse, camera);
           const intersects = raycaster.intersectObject(videoPlane);
           if (intersects.length > 0) {
-            playing ? video.pause() : video.play();
-            playing = !playing;
+            if (video.paused) {
+              video.play();
+            } else {
+              video.pause();
+            }
           }
         });
       }
