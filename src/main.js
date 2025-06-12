@@ -21,10 +21,14 @@ window.addEventListener("DOMContentLoaded", async () => {
   const loader = new GLTFLoader();
   loader.load("./assets/tabletfuture.glb", (gltf) => {
     const tablet = gltf.scene;
+    tablet.scale.set(0.7, 0.7, 0.7);
+    /*tablet anterior
     tablet.scale.set(0.5, 0.5, 0.5);
     tablet.rotation.x = Math.PI / 2;
     tablet.rotation.y = Math.PI;
-    tablet.position.set(0, 0.05, 0);
+    tablet.position.set(0, 0.05, 0);*/
+    tablet.rotation.set(0, Math.PI, 0);
+    tablet.position.set(0, 0, 0.1);
     tablet.visible = false;
     anchor.group.add(tablet);
 
