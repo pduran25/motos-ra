@@ -4,7 +4,7 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 window.addEventListener("DOMContentLoaded", async () => {
   // ✅ Corregido: accede desde window.MINDAR.IMAGE
   const mindarThree = new window.MINDAR.IMAGE.MindARThree({
-    container: document.body,
+    container: document.querySelector("#ar-container"),
     imageTargetSrc: "./target/moto.mind",
     maxTrack: 1
   });

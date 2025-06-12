@@ -8,7 +8,7 @@
     html, body {
       margin: 0; padding: 0; overflow: hidden; width: 100%; height: 100%; background: #000;
     }
-    #ar-container { width: 100vw; height: 100vh; position: relative }
+    #ar-container { width: 100vw; height: 100vh; position: relative; z-index: 0; }
     #overlay {
       position: absolute; z-index: 2; color: white;
       background: rgba(0,0,0,0.5); padding: 8px;
@@ -19,8 +19,10 @@
 <body>
   <div id="ar-container"></div>
   <div id="overlay">📷 Apunta a la imagen target para iniciar</div>
-  <script type="module" src="/src/main.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.1.4/dist/mindar-image-three.prod.js"></script>
 
+  <!-- ✅ Primero MindAR -->
+  <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.1.4/dist/mindar-image-three.prod.js"></script>
+  <!-- ✅ Después tu código -->
+  <script type="module" src="/src/main.js"></script>
 </body>
 </html>
