@@ -20,7 +20,7 @@ window.addEventListener("DOMContentLoaded", async () => {
   scene.add(light);
 
   const loader = new GLTFLoader();
-  loader.load("./assets/tablet.glb", (gltf) => {
+  loader.load("./assets/tab1.glb", (gltf) => {
     const tablet = gltf.scene;
     tablet.scale.set(0.01, 0.01, 0.01); // Animación: inicia pequeño
     tablet.rotation.set(Math.PI / 2, Math.PI, 0);
