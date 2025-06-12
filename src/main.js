@@ -11,7 +11,7 @@ window.addEventListener("DOMContentLoaded", async () => {
   const { renderer, scene, camera } = mindarThree;
   const anchor = mindarThree.addAnchor(0);
 
-  // ✅ Iluminación para visibilidad
+  // ✅ Iluminación para que se vea el modelo
   const ambientLight = new THREE.AmbientLight(0xffffff, 1);
   scene.add(ambientLight);
 
@@ -19,7 +19,7 @@ window.addEventListener("DOMContentLoaded", async () => {
   directionalLight.position.set(0, 1, 1).normalize();
   scene.add(directionalLight);
 
-  // Cargar modelo
+  // Cargar el modelo .glb de la tablet
   const loader = new GLTFLoader();
   loader.load("./assets/tablet.glb", (gltf) => {
     const tablet = gltf.scene;
@@ -27,7 +27,7 @@ window.addEventListener("DOMContentLoaded", async () => {
     tablet.visible = false;
     anchor.group.add(tablet);
 
-    // Mostrar/ocultar cuando se detecta el target
+    // Mostrar/ocultar la tablet según tracking
     anchor.onTargetFound = () => {
       tablet.visible = true;
     };
@@ -35,12 +35,12 @@ window.addEventListener("DOMContentLoaded", async () => {
       tablet.visible = false;
     };
 
-    // Crear video
+    // Crear el video
     const video = document.createElement("video");
     video.src = "./assets/videomotor.mp4";
     video.crossOrigin = "anonymous";
     video.loop = true;
-    video.muted = true; // ✅ Importante para autoplay
+    video.muted = false; // autoplay móvil
     video.playsInline = true;
     video.setAttribute("preload", "auto");
 
@@ -51,12 +51,18 @@ window.addEventListener("DOMContentLoaded", async () => {
       texture.magFilter = THREE.LinearFilter;
       texture.format = THREE.RGBAFormat;
 
-      const geometry = new THREE.PlaneGeometry(0.8, 0.45);
+      // ✅ Geometría del video: el doble de tamaño
+      const geometry = new THREE.PlaneGeometry(1.6, 0.9);
       const material = new THREE.MeshBasicMaterial({ map: texture, side: THREE.DoubleSide });
       const videoPlane = new THREE.Mesh(geometry, material);
-      videoPlane.position.set(0, 0.65, 0.03);
+
+      // ✅ Posición horizontal sobre la tablet
+      videoPlane.rotation.x = -Math.PI / 2;
+      videoPlane.position.set(0, 0.03, 0); // justo encima de la tablet
+
       tablet.add(videoPlane);
 
+      // Interacción para reproducir/pausar
       let playing = false;
       document.body.addEventListener("click", (e) => {
         const mouse = new THREE.Vector2(
@@ -74,6 +80,7 @@ window.addEventListener("DOMContentLoaded", async () => {
     });
   });
 
+  // Iniciar el rastreo AR
   await mindarThree.start();
   renderer.setAnimationLoop(() => {
     renderer.render(scene, camera);
