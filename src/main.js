@@ -32,16 +32,13 @@ window.addEventListener("DOMContentLoaded", async () => {
 
     video.addEventListener("loadeddata", () => {
       const texture = new THREE.VideoTexture(video);
-      const material = new THREE.MeshBasicMaterial({
-        map: texture,
-        side: THREE.DoubleSide
-      });
-
+      const material = new THREE.MeshBasicMaterial({ map: texture, side: THREE.DoubleSide });
       const geometry = new THREE.PlaneGeometry(2.2, 1.2);
       const videoPlane = new THREE.Mesh(geometry, material);
       videoPlane.rotation.x = Math.PI / 2;
       videoPlane.scale.x = -1;
       videoPlane.position.set(0, 0.12, 0);
+
       tablet.add(videoPlane);
 
       anchor.onTargetFound = () => {
@@ -61,7 +58,7 @@ window.addEventListener("DOMContentLoaded", async () => {
           video.muted = false;
           startBtn.style.display = "none";
         } catch (err) {
-          alert("Toca nuevamente para iniciar el video.");
+          alert("iOS requiere que toques para iniciar el video.");
           console.error(err);
         }
       });
