@@ -24,8 +24,9 @@ window.addEventListener("DOMContentLoaded", async () => {
     const tablet = gltf.scene;
     tablet.scale.set(0.5, 0.5, 0.5);
 
-    // ✅ Corregido: pantalla mirando hacia arriba
+    // ✅ Posicionamiento correcto: acostada y no de cabeza
     tablet.rotation.x = Math.PI / 2;
+    tablet.rotation.z = Math.PI; // gira 180° en Z
     tablet.position.set(0, 0.05, 0);
 
     tablet.visible = false;
@@ -52,21 +53,17 @@ window.addEventListener("DOMContentLoaded", async () => {
       const geometry = new THREE.PlaneGeometry(2.2, 1.2);
       const videoPlane = new THREE.Mesh(geometry, material);
 
-      // ✅ Pantalla también apuntando hacia arriba
       videoPlane.rotation.x = Math.PI / 2;
       videoPlane.position.set(0, 0.12, 0);
-
       tablet.add(videoPlane);
 
       startBtn.addEventListener("click", () => {
-        video.play()
-          .then(() => {
-            startBtn.style.display = "none";
-          })
-          .catch((err) => {
-            alert("Error al reproducir video. Intenta tocar de nuevo.");
-            console.error(err);
-          });
+        video.play().then(() => {
+          startBtn.style.display = "none";
+        }).catch((err) => {
+          alert("Error al reproducir video. Intenta tocar de nuevo.");
+          console.error(err);
+        });
       });
 
       document.body.addEventListener("click", (e) => {
