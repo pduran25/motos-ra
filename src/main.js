@@ -24,9 +24,9 @@ window.addEventListener("DOMContentLoaded", async () => {
     const tablet = gltf.scene;
     tablet.scale.set(0.5, 0.5, 0.5);
 
-    // ✅ Posicionamiento correcto: acostada y no de cabeza
+    // ✅ Tablet acostada, mirando hacia arriba y girada 180° en su propio eje
     tablet.rotation.x = Math.PI / 2;
-    tablet.rotation.z = Math.PI; // gira 180° en Z
+    tablet.rotation.y = Math.PI; // esta es la que pediste
     tablet.position.set(0, 0.05, 0);
 
     tablet.visible = false;
