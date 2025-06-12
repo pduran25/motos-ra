@@ -54,6 +54,7 @@ window.addEventListener("DOMContentLoaded", async () => {
       const videoPlane = new THREE.Mesh(geometry, material);
 
       videoPlane.rotation.x = Math.PI / 2;
+      videoPlane.scale.x = -1; // ✅ Corrige orientación invertida por rotación de la tablet
       videoPlane.position.set(0, 0.12, 0);
       tablet.add(videoPlane);
 
