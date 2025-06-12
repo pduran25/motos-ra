@@ -2,18 +2,18 @@ import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 
 window.addEventListener("DOMContentLoaded", async () => {
+  const startBtn = document.getElementById("start-video");
+  startBtn.style.display = "block";
+
   const mindarThree = new window.MINDAR.IMAGE.MindARThree({
     container: document.querySelector("#ar-container"),
     imageTargetSrc: "./target/moto.mind",
     maxTrack: 1
   });
 
-  const startBtn = document.getElementById("start-video");
-
   const { renderer, scene, camera } = mindarThree;
   const anchor = mindarThree.addAnchor(0);
 
-  // Luces
   scene.add(new THREE.AmbientLight(0xffffff, 1));
   const light = new THREE.DirectionalLight(0xffffff, 0.5);
   light.position.set(1, 2, 1);
@@ -24,9 +24,10 @@ window.addEventListener("DOMContentLoaded", async () => {
     const tablet = gltf.scene;
     tablet.scale.set(0.5, 0.5, 0.5);
 
-    // 🛏️ Tablet acostada y rotada correctamente sobre el target
-    tablet.rotation.x = -Math.PI / 2;
-    tablet.rotation.y = Math.PI; // gira la tablet 180° sobre su eje para que no salga de cabeza
+    // ✅ Tablet acostada, mirando hacia arriba y girada 180° en su propio eje
+    tablet.rotation.x = Math.PI / 2;
+    tablet.rotation.y = Math.PI; // esta es la que pediste
+    tablet.position.set(0, 0.05, 0);
 
     tablet.visible = false;
     anchor.group.add(tablet);
@@ -34,17 +35,18 @@ window.addEventListener("DOMContentLoaded", async () => {
     anchor.onTargetFound = () => (tablet.visible = true);
     anchor.onTargetLost = () => (tablet.visible = false);
 
-    // 🎥 Crear video
     const video = document.createElement("video");
     video.src = "./assets/videomotor.mp4";
     video.crossOrigin = "anonymous";
     video.loop = true;
-    video.muted = true; // 🔇 para autoplay en móviles
+    video.muted = true;
     video.playsInline = true;
     video.setAttribute("preload", "auto");
-
-    // Esperar a que el video esté listo
+    
     video.addEventListener("loadeddata", () => {
+      startBtn.style.display = "block";
+    });
+    /*video.addEventListener("loadeddata", () => {
       const texture = new THREE.VideoTexture(video);
       const material = new THREE.MeshBasicMaterial({
         map: texture,
@@ -55,47 +57,33 @@ window.addEventListener("DOMContentLoaded", async () => {
       const videoPlane = new THREE.Mesh(geometry, material);
 
       videoPlane.rotation.x = Math.PI / 2;
-      videoPlane.scale.x = -1; // invertir para corregir orientación
-      videoPlane.position.set(0, 0.12, 0); // sobre la tablet
-
+      videoPlane.scale.x = -1; // ✅ Corrige orientación invertida por rotación de la tablet
+      videoPlane.position.set(0, 0.12, 0);
       tablet.add(videoPlane);
 
-      // 📱 Móviles: reproducir al tocar el botón
-      const isMobile = /Mobi|Android/i.test(navigator.userAgent);
-      if (isMobile) {
-        startBtn.style.display = "block";
+      startBtn.addEventListener("click", () => {
+        video.play().then(() => {
+          video.muted = false; // 🔓 Habilita sonido tras reproducir
+          startBtn.style.display = "none";
+        }).catch((err) => {
+          alert("Error al reproducir video. Intenta tocar de nuevo.");
+          console.error(err);
+        });
+      });
 
-        startBtn.addEventListener("click", async () => {
-          try {
-            await video.play();
-            video.muted = false;
-            startBtn.style.display = "none";
-          } catch (err) {
-            alert("Toca nuevamente para iniciar el video.");
-            console.error(err);
-          }
-        });
-      } else {
-        // 🖥️ Escritorio: clic sobre el plano del video
-        document.body.addEventListener("click", (e) => {
-          const mouse = new THREE.Vector2(
-            (e.clientX / window.innerWidth) * 2 - 1,
-            -(e.clientY / window.innerHeight) * 2 + 1
-          );
-          const raycaster = new THREE.Raycaster();
-          raycaster.setFromCamera(mouse, camera);
-          const intersects = raycaster.intersectObject(videoPlane);
-          if (intersects.length > 0) {
-            if (video.paused) {
-              video.play();
-              video.muted = false;
-            } else {
-              video.pause();
-            }
-          }
-        });
-      }
-    });
+      document.body.addEventListener("click", (e) => {
+        const mouse = new THREE.Vector2(
+          (e.clientX / window.innerWidth) * 2 - 1,
+          -(e.clientY / window.innerHeight) * 2 + 1
+        );
+        const raycaster = new THREE.Raycaster();
+        raycaster.setFromCamera(mouse, camera);
+        const intersects = raycaster.intersectObject(videoPlane);
+        if (intersects.length > 0) {
+          video.paused ? video.play() : video.pause();
+        }
+      });
+    });*/
   });
 
   await mindarThree.start();
