@@ -21,9 +21,8 @@ window.addEventListener("DOMContentLoaded", async () => {
   const loader = new GLTFLoader();
   loader.load("./assets/tablet.glb", (gltf) => {
     const tablet = gltf.scene;
-    tablet.scale.set(0.5, 0.5, 0.5);
-    tablet.rotation.x = Math.PI / 2;
-    tablet.rotation.y = Math.PI;
+    tablet.scale.set(0.1, 0.1, 0.1); // Animación parte desde pequeño
+    tablet.rotation.set(0, 0, 0);    // Rotación inicial
     tablet.position.set(0, 0.05, 0);
     tablet.visible = false;
     anchor.group.add(tablet);
@@ -31,10 +30,13 @@ window.addEventListener("DOMContentLoaded", async () => {
     const video = document.createElement("video");
     video.src = "./assets/videomotor.mp4";
     video.crossOrigin = "anonymous";
-    video.loop = false; // ⛔ No se repite automáticamente
+    video.loop = false;
     video.muted = true;
     video.playsInline = true;
     video.setAttribute("preload", "auto");
+
+    let animating = false;
+    let animationProgress = 0;
 
     video.addEventListener("loadeddata", () => {
       const texture = new THREE.VideoTexture(video);
@@ -48,6 +50,8 @@ window.addEventListener("DOMContentLoaded", async () => {
 
       anchor.onTargetFound = () => {
         tablet.visible = true;
+        animationProgress = 0;
+        animating = true;
         if (video.paused || video.ended) {
           startBtn.style.display = "block";
         }
@@ -55,9 +59,9 @@ window.addEventListener("DOMContentLoaded", async () => {
 
       anchor.onTargetLost = () => {
         tablet.visible = false;
-        video.pause();            // ⛔ Detiene el video
-        video.currentTime = 0;    // 🔄 Lo reinicia al inicio
-        startBtn.style.display = "none"; // Oculta el botón
+        video.pause();
+        video.currentTime = 0;
+        startBtn.style.display = "none";
       };
 
       startBtn.addEventListener("click", async () => {
@@ -70,11 +74,30 @@ window.addEventListener("DOMContentLoaded", async () => {
           console.error(err);
         }
       });
+
+      renderer.setAnimationLoop(() => {
+        if (animating && animationProgress < 1) {
+          animationProgress += 0.02;
+
+          // Easing suave tipo easeOutCubic
+          const t = animationProgress;
+          const eased = 1 - Math.pow(1 - t, 3);
+
+          const scale = THREE.MathUtils.lerp(0.1, 0.5, eased);
+          const rotationY = THREE.MathUtils.lerp(0, Math.PI, eased);
+
+          tablet.scale.set(scale, scale, scale);
+          tablet.rotation.set(0, rotationY, 0);
+
+          if (eased >= 1) {
+            animating = false;
+          }
+        }
+
+        renderer.render(scene, camera);
+      });
     });
   });
 
   await mindarThree.start();
-  renderer.setAnimationLoop(() => {
-    renderer.render(scene, camera);
-  });
 });
