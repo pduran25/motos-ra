@@ -41,7 +41,7 @@ window.addEventListener("DOMContentLoaded", async () => {
 
 
     // Crear material negro inicialmente
-const blackMaterial = new THREE.MeshBasicMaterial({ color: 0x000000 });
+/*const blackMaterial = new THREE.MeshBasicMaterial({ color: 0x000000 });
 const geometry = new THREE.PlaneGeometry(2.2, 1.2);
 const videoPlane = new THREE.Mesh(geometry, blackMaterial);
 videoPlane.rotation.x = Math.PI / 2;
@@ -54,14 +54,14 @@ video.addEventListener("play", () => {
   const texture = new THREE.VideoTexture(video);
   texture.encoding = THREE.sRGBEncoding;
   videoPlane.material = new THREE.MeshBasicMaterial({ map: texture, side: THREE.DoubleSide });
-});
+});*/
 
-   /* const texture = new THREE.VideoTexture(video);
+    const texture = new THREE.VideoTexture(video);
     texture.encoding = THREE.sRGBEncoding;
 
     const material = new THREE.MeshBasicMaterial({ map: texture, side: THREE.DoubleSide });
     const geometry = new THREE.PlaneGeometry(2.2, 1.2);
-    const videoPlane = new THREE.Mesh(geometry, material);*/
+    const videoPlane = new THREE.Mesh(geometry, material);
     videoPlane.rotation.x = Math.PI / 2;
     videoPlane.scale.x = -1;
     videoPlane.position.set(0, 0.12, 0);
