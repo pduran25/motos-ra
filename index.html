@@ -15,11 +15,6 @@
       position: relative;
       z-index: 0;
     }
-    #overlay {
-      position: absolute; z-index: 2; color: white;
-      background: rgba(0,0,0,0.5); padding: 8px;
-      font-family: sans-serif; bottom: 10px; left: 10px; font-size: 14px;
-    }
     #start-video {
       position: fixed;
       bottom: 20px;
@@ -34,13 +29,23 @@
       z-index: 9999;
       display: none;
     }
-
+    video {
+      display: none;
+    }
   </style>
 </head>
 <body>
   <div id="ar-container"></div>
+
+  <!-- Botón para iniciar video -->
   <button id="start-video">▶️ Iniciar video</button>
 
+  <!-- Video precargado (iOS workaround) -->
+  <video id="hidden-video" muted playsinline preload="auto">
+    <source src="./assets/videomotor.mp4" type="video/mp4">
+  </video>
+
+  <!-- MindAR -->
   <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.1.4/dist/mindar-image-three.prod.js"></script>
   <script type="module" src="/src/main.js"></script>
 </body>
