@@ -3,7 +3,6 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 
 window.addEventListener("DOMContentLoaded", async () => {
   const startBtn = document.getElementById("start-video");
-  startBtn.style.display = "block";
 
   const mindarThree = new window.MINDAR.IMAGE.MindARThree({
     container: document.querySelector("#ar-container"),
@@ -42,10 +41,11 @@ window.addEventListener("DOMContentLoaded", async () => {
     video.muted = true;
     video.playsInline = true;
     video.setAttribute("preload", "auto");
-    
+
     video.addEventListener("loadeddata", () => {
       startBtn.style.display = "block";
     });
+    
     /*video.addEventListener("loadeddata", () => {
       const texture = new THREE.VideoTexture(video);
       const material = new THREE.MeshBasicMaterial({
