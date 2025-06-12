@@ -19,7 +19,7 @@ window.addEventListener("DOMContentLoaded", async () => {
   scene.add(light);
 
   const loader = new GLTFLoader();
-  loader.load("./assets/tablet.glb", (gltf) => {
+  loader.load("./assets/tabletfuture.glb", (gltf) => {
     const tablet = gltf.scene;
     tablet.scale.set(0.5, 0.5, 0.5);
     tablet.rotation.x = Math.PI / 2;
