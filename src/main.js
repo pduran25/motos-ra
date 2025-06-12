@@ -21,7 +21,7 @@ window.addEventListener("DOMContentLoaded", async () => {
   const loader = new GLTFLoader();
   loader.load("./assets/tabletfuture.glb", (gltf) => {
     const tablet = gltf.scene;
-    tablet.scale.set(0.7, 0.7, 0.7);
+    tablet.scale.set(1.7, 1.7, 1.7);
     /*tablet anterior
     tablet.scale.set(0.5, 0.5, 0.5);
     tablet.rotation.x = Math.PI / 2;
