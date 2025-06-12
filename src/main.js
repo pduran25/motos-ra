@@ -39,7 +39,7 @@ window.addEventListener("DOMContentLoaded", async () => {
     video.src = "./assets/videomotor.mp4";
     video.crossOrigin = "anonymous";
     video.loop = true;
-    video.muted = false;
+    video.muted = true;
     video.playsInline = true;
     video.setAttribute("preload", "auto");
 
@@ -60,6 +60,7 @@ window.addEventListener("DOMContentLoaded", async () => {
 
       startBtn.addEventListener("click", () => {
         video.play().then(() => {
+          video.muted = false; // 🔓 Habilita sonido tras reproducir
           startBtn.style.display = "none";
         }).catch((err) => {
           alert("Error al reproducir video. Intenta tocar de nuevo.");
