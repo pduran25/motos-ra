@@ -20,7 +20,7 @@ window.addEventListener("DOMContentLoaded", async () => {
   scene.add(light);
 
   const loader = new GLTFLoader();
-  loader.load("./assets/tab1.glb", (gltf) => {
+  loader.load("./assets/tablet.glb", (gltf) => {
     const tablet = gltf.scene;
     tablet.scale.set(0.01, 0.01, 0.01); // Animación: inicia pequeño
     tablet.rotation.set(Math.PI / 2, Math.PI, 0);
@@ -50,7 +50,7 @@ window.addEventListener("DOMContentLoaded", async () => {
     // Animación de aparición
     let animating = false;
     let animationProgress = 0;
-    const targetScale = new THREE.Vector3(1.5, 1.5, 1.5);
+    const targetScale = new THREE.Vector3(1, 1, 1);
     const initialScale = new THREE.Vector3(0.01, 0.01, 0.01);
     const easeOutCubic = (t) => (--t) * t * t + 1;
 
