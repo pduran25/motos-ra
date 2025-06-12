@@ -3,23 +3,19 @@
 <head>
   <meta charset="UTF-8" />
   <title>AR Tablet Interactiva</title>
-  <link rel="icon" href="data:,">
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
     html, body {
       margin: 0; padding: 0; overflow: hidden; width: 100%; height: 100%; background: #000;
     }
+
     #ar-container {
       width: 100vw;
       height: 100vh;
       position: relative;
       z-index: 0;
     }
-    #overlay {
-      position: absolute; z-index: 2; color: white;
-      background: rgba(0,0,0,0.5); padding: 8px;
-      font-family: sans-serif; bottom: 10px; left: 10px; font-size: 14px;
-    }
+
     #start-video {
       position: fixed;
       bottom: 20px;
@@ -35,13 +31,40 @@
       display: none;
     }
 
+    #scan-overlay {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 9998;
+      background: rgba(0, 0, 0, 0.6);
+      padding: 20px;
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #scan-overlay img {
+      width: 180px;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% { opacity: 0.6; }
+      50% { opacity: 1; }
+      100% { opacity: 0.6; }
+    }
   </style>
 </head>
 <body>
   <div id="ar-container"></div>
   <button id="start-video">▶️ Iniciar video</button>
+  <div id="scan-overlay">
+    <img src="./assets/scanning.gif" alt="Escaneando..." />
+  </div>
 
   <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.1.4/dist/mindar-image-three.prod.js"></script>
   <script type="module" src="/src/main.js"></script>
 </body>
-</html> 
+</html>

@@ -3,6 +3,7 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 
 window.addEventListener("DOMContentLoaded", async () => {
   const startBtn = document.getElementById("start-video");
+  const scanOverlay = document.getElementById("scan-overlay");
 
   const mindarThree = new window.MINDAR.IMAGE.MindARThree({
     container: document.querySelector("#ar-container"),
@@ -21,9 +22,9 @@ window.addEventListener("DOMContentLoaded", async () => {
   const loader = new GLTFLoader();
   loader.load("./assets/tablet.glb", (gltf) => {
     const tablet = gltf.scene;
-    tablet.scale.set(0.01, 0.01, 0.01);
-    tablet.rotation.set(Math.PI / 2, Math.PI, 0);
-    tablet.position.set(0, 0.05, 0);
+    tablet.scale.set(0.01, 0.01, 0.01); // animación desde escala pequeña
+    tablet.rotation.set(Math.PI / 2, Math.PI, 0); // posición fija y horizontal
+    tablet.position.set(0, 0.05, 0); // sobre el target
     tablet.visible = false;
     anchor.group.add(tablet);
 
@@ -38,22 +39,13 @@ window.addEventListener("DOMContentLoaded", async () => {
     const texture = new THREE.VideoTexture(video);
     texture.encoding = THREE.sRGBEncoding;
 
-    const material = new THREE.MeshBasicMaterial({ 
-      map: texture, 
-      side: THREE.DoubleSide 
-    });
-
+    const material = new THREE.MeshBasicMaterial({ map: texture, side: THREE.DoubleSide });
     const geometry = new THREE.PlaneGeometry(2.2, 1.2);
     const videoPlane = new THREE.Mesh(geometry, material);
     videoPlane.rotation.x = Math.PI / 2;
     videoPlane.scale.x = -1;
     videoPlane.position.set(0, 0.12, 0);
     tablet.add(videoPlane);
-
-    // Agrega fondo negro inicial (renderizado con mapa de video apagado)
-    texture.onUpdate = () => {
-      texture.needsUpdate = true;
-    };
 
     let animating = false;
     let animationProgress = 0;
@@ -63,6 +55,7 @@ window.addEventListener("DOMContentLoaded", async () => {
     const easeOutCubic = (t) => (--t) * t * t + 1;
 
     anchor.onTargetFound = () => {
+      scanOverlay.style.display = "none";
       tablet.visible = true;
       animationProgress = 0;
       animating = true;
@@ -76,6 +69,7 @@ window.addEventListener("DOMContentLoaded", async () => {
       video.pause();
       video.currentTime = 0;
       startBtn.style.display = "none";
+      scanOverlay.style.display = "flex";
     };
 
     startBtn.addEventListener("click", async () => {
@@ -94,7 +88,7 @@ window.addEventListener("DOMContentLoaded", async () => {
         animationProgress += 0.02;
         const eased = easeOutCubic(animationProgress);
         tablet.scale.lerpVectors(initialScale, targetScale, eased);
-        tablet.rotation.z = Math.PI * (1 - eased);
+        tablet.rotation.z = Math.PI * (1 - eased); // animación giro
       }
       renderer.render(scene, camera);
     });
