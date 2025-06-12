@@ -37,13 +37,23 @@ window.addEventListener("DOMContentLoaded", async () => {
 
     video.addEventListener("loadeddata", () => {
       const texture = new THREE.VideoTexture(video);
-      const material = new THREE.MeshBasicMaterial({ map: texture, side: THREE.DoubleSide });
+      texture.encoding = THREE.sRGBEncoding;
+      texture.minFilter = THREE.LinearFilter;
+      texture.magFilter = THREE.LinearFilter;
+      texture.format = THREE.RGBFormat;
+
+      const blackMaterial = new THREE.MeshBasicMaterial({ color: 0x000000 });
       const geometry = new THREE.PlaneGeometry(2.2, 1.2);
-      const videoPlane = new THREE.Mesh(geometry, material);
+      const videoPlane = new THREE.Mesh(geometry, blackMaterial);
       videoPlane.rotation.x = Math.PI / 2;
       videoPlane.scale.x = -1;
       videoPlane.position.set(0, 0.12, 0);
       tablet.add(videoPlane);
+
+      // Reemplazar material cuando el video esté listo para reproducirse
+      video.addEventListener("play", () => {
+        videoPlane.material = new THREE.MeshBasicMaterial({ map: texture, side: THREE.DoubleSide });
+      });
 
       let animating = false;
       let animationProgress = 0;
@@ -84,7 +94,7 @@ window.addEventListener("DOMContentLoaded", async () => {
           animationProgress += 0.02;
           const eased = easeOutCubic(animationProgress);
           tablet.scale.lerpVectors(initialScale, targetScale, eased);
-          tablet.rotation.z = Math.PI * (1 - eased); // giro suave
+          tablet.rotation.z = Math.PI * (1 - eased);
         }
         renderer.render(scene, camera);
       });
