@@ -8,6 +8,13 @@ window.addEventListener("DOMContentLoaded", async () => {
     maxTrack: 1
   });
 
+  const btn = document.getElementById("start-video");
+  btn.style.display = "block"; // forzar visualización
+  btn.addEventListener("click", () => {
+    alert("¡Botón funciona!");
+    btn.style.display = "none";
+  });
+
   const { renderer, scene, camera } = mindarThree;
   const anchor = mindarThree.addAnchor(0);
 

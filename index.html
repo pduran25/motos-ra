@@ -26,13 +26,13 @@
       left: 50%;
       transform: translate(-50%, -50%);
       padding: 16px 24px;
-      font-size: 16px;
-      background: #000;
-      color: white;
-      border: none;
+      font-size: 18px;
+      background: #111;
+      color: #fff;
+      border: 2px solid white;
       border-radius: 8px;
-      z-index: 5;
-      display: none;
+      z-index: 10;
+      display: none; /* se mostrará desde JS */
     }
   </style>
 </head>
@@ -40,10 +40,10 @@
   <div id="ar-container"></div>
   <div id="overlay">📷 Apunta a la imagen target para iniciar</div>
 
-  <!-- ✅ Botón antes del script -->
+  <!-- ✅ Botón colocado antes del script -->
   <button id="start-video">▶️ Iniciar video</button>
 
-  <!-- ✅ Scripts -->
+  <!-- Scripts -->
   <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.1.4/dist/mindar-image-three.prod.js"></script>
   <script type="module" src="/src/main.js"></script>
 </body>
