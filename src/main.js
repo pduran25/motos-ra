@@ -7,7 +7,7 @@ window.addEventListener("DOMContentLoaded", async () => {
 
   const mindarThree = new window.MINDAR.IMAGE.MindARThree({
     container: document.querySelector("#ar-container"),
-    imageTargetSrc: "./target/codigo.mind",
+    imageTargetSrc: "./target/moto.mind",
     maxTrack: 1
   });
 
