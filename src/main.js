@@ -8,23 +8,15 @@ window.addEventListener("DOMContentLoaded", async () => {
     maxTrack: 1
   });
 
-  const btn = document.getElementById("start-video");
-  btn.style.display = "block"; // forzar visualización
-  btn.addEventListener("click", () => {
-    alert("¡Botón funciona!");
-    btn.style.display = "none";
-  });
-
   const { renderer, scene, camera } = mindarThree;
   const anchor = mindarThree.addAnchor(0);
 
-  // Luz básica
+  // Luces
   scene.add(new THREE.AmbientLight(0xffffff, 1));
   const light = new THREE.DirectionalLight(0xffffff, 0.5);
   light.position.set(1, 2, 1);
   scene.add(light);
 
-  // Cargar modelo
   const loader = new GLTFLoader();
   loader.load("./assets/tablet.glb", (gltf) => {
     const tablet = gltf.scene;
@@ -40,7 +32,7 @@ window.addEventListener("DOMContentLoaded", async () => {
     video.src = "./assets/videomotor.mp4";
     video.crossOrigin = "anonymous";
     video.loop = true;
-    video.muted = false; // autoplay garantizado
+    video.muted = false;
     video.playsInline = true;
     video.setAttribute("preload", "auto");
 
@@ -58,7 +50,7 @@ window.addEventListener("DOMContentLoaded", async () => {
       videoPlane.position.set(0, 0.1, 0);
       tablet.add(videoPlane);
 
-      // Manejo móvil o desktop
+      // Mostrar botón solo en móviles
       const isMobile = /Mobi|Android/i.test(navigator.userAgent);
       if (isMobile) {
         startBtn.style.display = "block";
@@ -66,8 +58,10 @@ window.addEventListener("DOMContentLoaded", async () => {
           video.play();
           startBtn.style.display = "none";
         });
-      } else {
-        // Click en escritorio
+      }
+
+      // En escritorio: click sobre el video
+      if (!isMobile) {
         document.body.addEventListener("click", (e) => {
           const mouse = new THREE.Vector2(
             (e.clientX / window.innerWidth) * 2 - 1,
@@ -77,11 +71,7 @@ window.addEventListener("DOMContentLoaded", async () => {
           raycaster.setFromCamera(mouse, camera);
           const intersects = raycaster.intersectObject(videoPlane);
           if (intersects.length > 0) {
-            if (video.paused) {
-              video.play();
-            } else {
-              video.pause();
-            }
+            video.paused ? video.play() : video.pause();
           }
         });
       }
