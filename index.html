@@ -3,7 +3,6 @@
 <head>
   <meta charset="UTF-8" />
   <title>AR Tablet Interactiva</title>
-  <link rel="icon" href="data:,">
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
     html, body {
@@ -33,12 +32,10 @@
 </head>
 <body>
   <div id="ar-container"></div>
+  <video id="video-element" src="./assets/videomotor.mp4" muted playsinline preload="auto" style="display:none;"></video>
   <button id="start-video">▶️ Iniciar video</button>
-  <video id="hidden-video" muted playsinline preload="auto" style="display: none">
-    <source src="./assets/videomotor.mp4" type="video/mp4">
-  </video>
 
   <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.1.4/dist/mindar-image-three.prod.js"></script>
-  <script type="module" src="/src/main.js"></script>
+  <script type="module" src="./main.js"></script>
 </body>
 </html>
