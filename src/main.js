@@ -1,8 +1,7 @@
-import * as THREE from 'three';
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
-
 window.addEventListener("DOMContentLoaded", async () => {
-  // ✅ Corregido: accede desde window.MINDAR.IMAGE
+  const THREE = window.THREE;
+  const { GLTFLoader } = await import('https://cdn.jsdelivr.net/npm/three@0.150.1/examples/jsm/loaders/GLTFLoader.js');
+
   const mindarThree = new window.MINDAR.IMAGE.MindARThree({
     container: document.querySelector("#ar-container"),
     imageTargetSrc: "./target/moto.mind",
@@ -12,14 +11,14 @@ window.addEventListener("DOMContentLoaded", async () => {
   const { renderer, scene, camera } = mindarThree;
   const anchor = mindarThree.addAnchor(0);
 
-  // Cargar modelo de tablet
   const loader = new GLTFLoader();
   loader.load("./assets/tablet.glb", (gltf) => {
+    console.log("✅ Modelo cargado:", gltf);
+
     const tablet = gltf.scene;
     tablet.scale.set(0.5, 0.5, 0.5);
     anchor.group.add(tablet);
 
-    // Crear video
     const video = document.createElement("video");
     video.src = "./assets/videomotor.mp4";
     video.crossOrigin = "anonymous";
@@ -29,21 +28,13 @@ window.addEventListener("DOMContentLoaded", async () => {
     video.setAttribute("preload", "auto");
 
     const texture = new THREE.VideoTexture(video);
-    texture.minFilter = THREE.LinearFilter;
-    texture.magFilter = THREE.LinearFilter;
-    texture.format = THREE.RGBFormat;
-
-    // Pantalla de la tablet
     const geometry = new THREE.PlaneGeometry(0.8, 0.45);
     const material = new THREE.MeshBasicMaterial({ map: texture });
     const videoPlane = new THREE.Mesh(geometry, material);
-    videoPlane.position.set(0, 0.65, 0.03); // Ajuste visual
+    videoPlane.position.set(0, 0.65, 0.03);
     tablet.add(videoPlane);
 
     let playing = false;
-    videoPlane.userData.clickable = true;
-
-    // Interacción táctil/click
     document.body.addEventListener("click", (e) => {
       const mouse = new THREE.Vector2(
         (e.clientX / window.innerWidth) * 2 - 1,
