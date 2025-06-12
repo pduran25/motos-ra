@@ -50,19 +50,34 @@ window.addEventListener("DOMContentLoaded", async () => {
       texture.minFilter = THREE.LinearFilter;
       texture.magFilter = THREE.LinearFilter;
       texture.format = THREE.RGBAFormat;
-
-      // ✅ Geometría del video: el doble de tamaño
+    
+      // ✅ Geometría del video (doble de tamaño)
       const geometry = new THREE.PlaneGeometry(1.6, 0.9);
-      const material = new THREE.MeshBasicMaterial({ map: texture, side: THREE.DoubleSide });
+      const material = new THREE.MeshBasicMaterial({
+        map: texture,
+        side: THREE.DoubleSide,
+        transparent: false
+      });
+    
       const videoPlane = new THREE.Mesh(geometry, material);
-
-      // ✅ Posición horizontal sobre la tablet
+    
+      // ✅ Asegurar que el plano esté por encima y bien visible
       videoPlane.rotation.x = -Math.PI / 2;
-      videoPlane.position.set(0, 0.03, 0); // justo encima de la tablet
-
+      videoPlane.position.set(0, 0.1, 0); // más alto para evitar intersección con tablet
+    
+      // ✅ Agregar un marco visual para saber que está el video
+      const frameGeometry = new THREE.PlaneGeometry(1.65, 0.95);
+      const frameMaterial = new THREE.MeshBasicMaterial({
+        color: 0x333333,
+        side: THREE.DoubleSide
+      });
+      const framePlane = new THREE.Mesh(frameGeometry, frameMaterial);
+      framePlane.rotation.x = -Math.PI / 2;
+      framePlane.position.set(0, 0.099, 0); // justo debajo del video
+    
+      tablet.add(framePlane);
       tablet.add(videoPlane);
-
-      // Interacción para reproducir/pausar
+    
       let playing = false;
       document.body.addEventListener("click", (e) => {
         const mouse = new THREE.Vector2(
@@ -78,6 +93,7 @@ window.addEventListener("DOMContentLoaded", async () => {
         }
       });
     });
+    
   });
 
   // Iniciar el rastreo AR
