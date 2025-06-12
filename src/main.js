@@ -2,6 +2,9 @@ import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 
 window.addEventListener("DOMContentLoaded", async () => {
+  const startBtn = document.getElementById("start-video");
+  startBtn.style.display = "block";
+
   const mindarThree = new window.MINDAR.IMAGE.MindARThree({
     container: document.querySelector("#ar-container"),
     imageTargetSrc: "./target/moto.mind",
@@ -11,7 +14,6 @@ window.addEventListener("DOMContentLoaded", async () => {
   const { renderer, scene, camera } = mindarThree;
   const anchor = mindarThree.addAnchor(0);
 
-  // Luces
   scene.add(new THREE.AmbientLight(0xffffff, 1));
   const light = new THREE.DirectionalLight(0xffffff, 0.5);
   light.position.set(1, 2, 1);
@@ -27,7 +29,6 @@ window.addEventListener("DOMContentLoaded", async () => {
     anchor.onTargetFound = () => (tablet.visible = true);
     anchor.onTargetLost = () => (tablet.visible = false);
 
-    // Crear video
     const video = document.createElement("video");
     video.src = "./assets/videomotor.mp4";
     video.crossOrigin = "anonymous";
@@ -36,8 +37,7 @@ window.addEventListener("DOMContentLoaded", async () => {
     video.playsInline = true;
     video.setAttribute("preload", "auto");
 
-    const startBtn = document.getElementById("start-video");
-
+    // ⏳ Esperar a que el video esté listo
     video.addEventListener("loadeddata", () => {
       const texture = new THREE.VideoTexture(video);
       const material = new THREE.MeshBasicMaterial({
@@ -50,42 +50,18 @@ window.addEventListener("DOMContentLoaded", async () => {
       videoPlane.position.set(0, 0.1, 0);
       tablet.add(videoPlane);
 
-      // Mostrar botón solo en móviles
-      const isMobile = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-
-if (isMobile) {
-  console.log("📱 Dispositivo móvil detectado");
-  startBtn.style.display = "block";
-
-  startBtn.addEventListener("click", () => {
-    video.play()
-      .then(() => {
-        console.log("▶️ Video reproducido");
-        startBtn.style.display = "none";
-      })
-      .catch((err) => {
-        console.error("❌ No se pudo reproducir el video:", err);
-        alert("No se puede reproducir el video automáticamente. Intenta tocar de nuevo.");
+      // 🎯 Reproducir video cuando se toque el botón
+      startBtn.addEventListener("click", () => {
+        video.play()
+          .then(() => {
+            startBtn.style.display = "none";
+            console.log("▶️ Video iniciado");
+          })
+          .catch((err) => {
+            alert("❌ No se pudo reproducir el video. Intenta tocar nuevamente.");
+            console.error(err);
+          });
       });
-  });
-}
-
-
-      // En escritorio: click sobre el video
-      if (!isMobile) {
-        document.body.addEventListener("click", (e) => {
-          const mouse = new THREE.Vector2(
-            (e.clientX / window.innerWidth) * 2 - 1,
-            -(e.clientY / window.innerHeight) * 2 + 1
-          );
-          const raycaster = new THREE.Raycaster();
-          raycaster.setFromCamera(mouse, camera);
-          const intersects = raycaster.intersectObject(videoPlane);
-          if (intersects.length > 0) {
-            video.paused ? video.play() : video.pause();
-          }
-        });
-      }
     });
   });
 
