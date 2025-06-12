@@ -15,8 +15,8 @@ window.addEventListener("DOMContentLoaded", async () => {
   const anchor = mindarThree.addAnchor(0);
 
   scene.add(new THREE.AmbientLight(0xffffff, 1));
-  const light = new THREE.DirectionalLight(0xffffff, 0.5);
-  light.position.set(1, 2, 1);
+  const light = new THREE.DirectionalLight(0xffffff, 0.8);
+  light.position.set(0, 1, 0);
   scene.add(light);
 
   const loader = new GLTFLoader();
@@ -32,6 +32,8 @@ window.addEventListener("DOMContentLoaded", async () => {
 
     video.addEventListener("loadeddata", () => {
       const texture = new THREE.VideoTexture(video);
+      texture.encoding = THREE.sRGBEncoding;
+
       const material = new THREE.MeshBasicMaterial({ map: texture, side: THREE.DoubleSide });
       const geometry = new THREE.PlaneGeometry(2.2, 1.2);
       const videoPlane = new THREE.Mesh(geometry, material);
@@ -58,8 +60,7 @@ window.addEventListener("DOMContentLoaded", async () => {
           video.muted = false;
           startBtn.style.display = "none";
         } catch (err) {
-          alert("iOS requiere que toques para iniciar el video.");
-          console.error(err);
+          alert("Toca nuevamente para iniciar el video.");
         }
       });
     });
