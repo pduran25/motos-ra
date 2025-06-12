@@ -11,20 +11,20 @@ window.addEventListener("DOMContentLoaded", async () => {
   const { renderer, scene, camera } = mindarThree;
   const anchor = mindarThree.addAnchor(0);
 
+  // ✅ Iluminación añadida
+  const ambientLight = new THREE.AmbientLight(0xffffff, 1);
+  scene.add(ambientLight);
+
+  const directionalLight = new THREE.DirectionalLight(0xffffff, 0.6);
+  directionalLight.position.set(0, 1, 1).normalize();
+  scene.add(directionalLight);
+
+  // Cargar modelo
   const loader = new GLTFLoader();
-  loader.load("./assets/tablet2.glb", (gltf) => {
+  loader.load("./assets/tablet.glb", (gltf) => {
     const tablet = gltf.scene;
     tablet.scale.set(0.5, 0.5, 0.5);
-    tablet.visible = false; // Ocultar hasta detectar el target
     anchor.group.add(tablet);
-
-    // Mostrar/ocultar al detectar el target
-    anchor.onTargetFound = () => {
-      tablet.visible = true;
-    };
-    anchor.onTargetLost = () => {
-      tablet.visible = false;
-    };
 
     // Crear video
     const video = document.createElement("video");
@@ -35,7 +35,6 @@ window.addEventListener("DOMContentLoaded", async () => {
     video.playsInline = true;
     video.setAttribute("preload", "auto");
 
-    // Solo crear la textura cuando esté listo
     video.addEventListener("canplaythrough", () => {
       const texture = new THREE.VideoTexture(video);
       texture.minFilter = THREE.LinearFilter;
@@ -48,7 +47,6 @@ window.addEventListener("DOMContentLoaded", async () => {
       videoPlane.position.set(0, 0.65, 0.03);
       tablet.add(videoPlane);
 
-      // Click para reproducir/pausar
       let playing = false;
       document.body.addEventListener("click", (e) => {
         const mouse = new THREE.Vector2(
