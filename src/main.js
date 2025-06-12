@@ -50,7 +50,7 @@ window.addEventListener("DOMContentLoaded", async () => {
     // Animación de aparición
     let animating = false;
     let animationProgress = 0;
-    const targetScale = new THREE.Vector3(1, 1, 1);
+    const targetScale = new THREE.Vector3(0.5, 0.5, 0.5);
     const initialScale = new THREE.Vector3(0.01, 0.01, 0.01);
     const easeOutCubic = (t) => (--t) * t * t + 1;
 
