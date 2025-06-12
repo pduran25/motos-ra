@@ -34,7 +34,9 @@
       z-index: 9999;
       display: none;
     }
-
+    #hidden-video {
+      display: none;
+    }
   </style>
 </head>
 <body>
@@ -42,6 +44,10 @@
   <div id="overlay">📷 Apunta a la imagen target para iniciar</div>
   <button id="start-video">▶️ Iniciar video</button>
 
+  <!-- Video oculto para iOS -->
+  <video id="hidden-video" muted playsinline preload="auto"></video>
+
+  <!-- Librería MindAR -->
   <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.1.4/dist/mindar-image-three.prod.js"></script>
   <script type="module" src="/src/main.js"></script>
 </body>
