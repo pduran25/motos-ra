@@ -11,15 +11,12 @@ window.addEventListener("DOMContentLoaded", async () => {
   const { renderer, scene, camera } = mindarThree;
   const anchor = mindarThree.addAnchor(0);
 
-  // ✅ Iluminación para que se vea el modelo
   const ambientLight = new THREE.AmbientLight(0xffffff, 1);
   scene.add(ambientLight);
-
   const directionalLight = new THREE.DirectionalLight(0xffffff, 0.6);
   directionalLight.position.set(0, 1, 1).normalize();
   scene.add(directionalLight);
 
-  // Cargar el modelo .glb de la tablet
   const loader = new GLTFLoader();
   loader.load("./assets/tablet.glb", (gltf) => {
     const tablet = gltf.scene;
@@ -27,78 +24,69 @@ window.addEventListener("DOMContentLoaded", async () => {
     tablet.visible = false;
     anchor.group.add(tablet);
 
-    // Mostrar/ocultar la tablet según tracking
-    anchor.onTargetFound = () => {
-      tablet.visible = true;
-    };
-    anchor.onTargetLost = () => {
-      tablet.visible = false;
-    };
+    anchor.onTargetFound = () => { tablet.visible = true; };
+    anchor.onTargetLost = () => { tablet.visible = false; };
 
-    // Crear el video
     const video = document.createElement("video");
     video.src = "./assets/videomotor.mp4";
     video.crossOrigin = "anonymous";
     video.loop = true;
-    video.muted = false; // autoplay móvil
+    video.muted = false; // puede reproducirse si hay interacción
     video.playsInline = true;
     video.setAttribute("preload", "auto");
 
-    // Esperar a que el video esté listo
+    const startBtn = document.getElementById("start-video");
+
     video.addEventListener("loadeddata", () => {
       const texture = new THREE.VideoTexture(video);
       texture.minFilter = THREE.LinearFilter;
       texture.magFilter = THREE.LinearFilter;
       texture.format = THREE.RGBAFormat;
-    
-      // ✅ NUEVO tamaño: más grande (2.2 x 1.2)
+
       const geometry = new THREE.PlaneGeometry(2.2, 1.2);
-      const material = new THREE.MeshBasicMaterial({
-        map: texture,
-        side: THREE.DoubleSide,
-        transparent: false
-      });
-    
+      const material = new THREE.MeshBasicMaterial({ map: texture, side: THREE.DoubleSide });
       const videoPlane = new THREE.Mesh(geometry, material);
-    
-      // ✅ Posición elevada sobre la tablet para visibilidad
       videoPlane.rotation.x = -Math.PI / 2;
-      videoPlane.position.set(0, 0.11, 0); // elevación ajustada
-    
-      // ✅ Marco visual (un poco más grande que el video)
+      videoPlane.position.set(0, 0.11, 0);
+
       const frameGeometry = new THREE.PlaneGeometry(2.25, 1.25);
       const frameMaterial = new THREE.MeshBasicMaterial({
-        color: 0x333333,
-        side: THREE.DoubleSide
+        color: 0x333333, side: THREE.DoubleSide
       });
       const framePlane = new THREE.Mesh(frameGeometry, frameMaterial);
       framePlane.rotation.x = -Math.PI / 2;
-      framePlane.position.set(0, 0.109, 0); // justo debajo del video
-    
-      // Añadir a la tablet
+      framePlane.position.set(0, 0.109, 0);
+
       tablet.add(framePlane);
       tablet.add(videoPlane);
-    
+
       let playing = false;
-      document.body.addEventListener("click", (e) => {
-        const mouse = new THREE.Vector2(
-          (e.clientX / window.innerWidth) * 2 - 1,
-          -(e.clientY / window.innerHeight) * 2 + 1
-        );
-        const raycaster = new THREE.Raycaster();
-        raycaster.setFromCamera(mouse, camera);
-        const intersects = raycaster.intersectObject(videoPlane);
-        if (intersects.length > 0) {
-          playing ? video.pause() : video.play();
-          playing = !playing;
-        }
-      });
+
+      if (/Mobi|Android/i.test(navigator.userAgent)) {
+        startBtn.style.display = "block";
+        startBtn.addEventListener("click", () => {
+          video.play();
+          playing = true;
+          startBtn.style.display = "none";
+        });
+      } else {
+        document.body.addEventListener("click", (e) => {
+          const mouse = new THREE.Vector2(
+            (e.clientX / window.innerWidth) * 2 - 1,
+            -(e.clientY / window.innerHeight) * 2 + 1
+          );
+          const raycaster = new THREE.Raycaster();
+          raycaster.setFromCamera(mouse, camera);
+          const intersects = raycaster.intersectObject(videoPlane);
+          if (intersects.length > 0) {
+            playing ? video.pause() : video.play();
+            playing = !playing;
+          }
+        });
+      }
     });
-    
-    
   });
 
-  // Iniciar el rastreo AR
   await mindarThree.start();
   renderer.setAnimationLoop(() => {
     renderer.render(scene, camera);
