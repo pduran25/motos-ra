@@ -27,16 +27,15 @@ window.addEventListener("DOMContentLoaded", async () => {
     tablet.position.set(0, 0.05, 0);
     tablet.visible = false;
     anchor.group.add(tablet);
-  
+
     const video = document.createElement("video");
     video.src = "./assets/videomotor.mp4";
     video.crossOrigin = "anonymous";
-    video.loop = true;
+    video.loop = false; // ⛔ No se repite automáticamente
     video.muted = true;
     video.playsInline = true;
     video.setAttribute("preload", "auto");
-  
-    // ⏳ Crear videoPlane una vez cargado el video
+
     video.addEventListener("loadeddata", () => {
       const texture = new THREE.VideoTexture(video);
       const material = new THREE.MeshBasicMaterial({ map: texture, side: THREE.DoubleSide });
@@ -46,18 +45,21 @@ window.addEventListener("DOMContentLoaded", async () => {
       videoPlane.scale.x = -1;
       videoPlane.position.set(0, 0.12, 0);
       tablet.add(videoPlane);
-  
-      // ✅ Mostrar botón solo cuando el target se detecta
+
       anchor.onTargetFound = () => {
         tablet.visible = true;
-        startBtn.style.display = "block";
+        if (video.paused || video.ended) {
+          startBtn.style.display = "block";
+        }
       };
-  
+
       anchor.onTargetLost = () => {
         tablet.visible = false;
-        startBtn.style.display = "none";
+        video.pause();            // ⛔ Detiene el video
+        video.currentTime = 0;    // 🔄 Lo reinicia al inicio
+        startBtn.style.display = "none"; // Oculta el botón
       };
-  
+
       startBtn.addEventListener("click", async () => {
         try {
           await video.play();
@@ -70,7 +72,6 @@ window.addEventListener("DOMContentLoaded", async () => {
       });
     });
   });
-  
 
   await mindarThree.start();
   renderer.setAnimationLoop(() => {
