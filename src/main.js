@@ -3,58 +3,61 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 
 window.addEventListener("DOMContentLoaded", async () => {
   const startBtn = document.getElementById("start-video");
-  const video = document.getElementById("hidden-video");
-  video.load(); // ✅ esencial para iOS
 
-  // Configurar escena AR
   const mindarThree = new window.MINDAR.IMAGE.MindARThree({
     container: document.querySelector("#ar-container"),
     imageTargetSrc: "./target/moto.mind",
-    maxTrack: 1,
+    maxTrack: 1
   });
 
   const { renderer, scene, camera } = mindarThree;
   const anchor = mindarThree.addAnchor(0);
 
-  // Iluminación
   scene.add(new THREE.AmbientLight(0xffffff, 1));
   const light = new THREE.DirectionalLight(0xffffff, 0.5);
   light.position.set(1, 2, 1);
   scene.add(light);
 
-  // Cargar modelo de tablet
   const loader = new GLTFLoader();
   loader.load("./assets/tablet.glb", (gltf) => {
     const tablet = gltf.scene;
     tablet.scale.set(0.5, 0.5, 0.5);
-    tablet.rotation.x = Math.PI / 2;   // Acostado
-    tablet.rotation.y = Math.PI;       // Roto 180° horizontal
+    tablet.rotation.x = Math.PI / 2;
+    tablet.rotation.y = Math.PI;
     tablet.position.set(0, 0.05, 0);
     tablet.visible = false;
-
     anchor.group.add(tablet);
-
+  
+    const video = document.createElement("video");
+    video.src = "./assets/videomotor.mp4";
+    video.crossOrigin = "anonymous";
+    video.loop = true;
+    video.muted = true;
+    video.playsInline = true;
+    video.setAttribute("preload", "auto");
+  
+    // ⏳ Crear videoPlane una vez cargado el video
     video.addEventListener("loadeddata", () => {
       const texture = new THREE.VideoTexture(video);
       const material = new THREE.MeshBasicMaterial({ map: texture, side: THREE.DoubleSide });
       const geometry = new THREE.PlaneGeometry(2.2, 1.2);
       const videoPlane = new THREE.Mesh(geometry, material);
       videoPlane.rotation.x = Math.PI / 2;
-      videoPlane.scale.x = -1; // invertir horizontal para corregir video espejo
+      videoPlane.scale.x = -1;
       videoPlane.position.set(0, 0.12, 0);
       tablet.add(videoPlane);
-
+  
+      // ✅ Mostrar botón solo cuando el target se detecta
       anchor.onTargetFound = () => {
         tablet.visible = true;
         startBtn.style.display = "block";
       };
-
+  
       anchor.onTargetLost = () => {
         tablet.visible = false;
         startBtn.style.display = "none";
-        video.pause(); // detener al perder el target
       };
-
+  
       startBtn.addEventListener("click", async () => {
         try {
           await video.play();
@@ -67,8 +70,8 @@ window.addEventListener("DOMContentLoaded", async () => {
       });
     });
   });
+  
 
-  // Iniciar escena AR
   await mindarThree.start();
   renderer.setAnimationLoop(() => {
     renderer.render(scene, camera);
