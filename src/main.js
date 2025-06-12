@@ -22,9 +22,9 @@ window.addEventListener("DOMContentLoaded", async () => {
   const loader = new GLTFLoader();
   loader.load("./assets/tablet.glb", (gltf) => {
     const tablet = gltf.scene;
-    tablet.scale.set(0.01, 0.01, 0.01); // animación desde escala pequeña
-    tablet.rotation.set(Math.PI / 2, Math.PI, 0); // posición fija y horizontal
-    tablet.position.set(0, 0.05, 0); // sobre el target
+    tablet.scale.set(0.01, 0.01, 0.01); // Animación: inicia pequeño
+    tablet.rotation.set(Math.PI / 2, Math.PI, 0);
+    tablet.position.set(0, 0.05, 0);
     tablet.visible = false;
     anchor.group.add(tablet);
 
@@ -47,11 +47,11 @@ window.addEventListener("DOMContentLoaded", async () => {
     videoPlane.position.set(0, 0.12, 0);
     tablet.add(videoPlane);
 
+    // Animación de aparición
     let animating = false;
     let animationProgress = 0;
     const targetScale = new THREE.Vector3(0.5, 0.5, 0.5);
     const initialScale = new THREE.Vector3(0.01, 0.01, 0.01);
-
     const easeOutCubic = (t) => (--t) * t * t + 1;
 
     anchor.onTargetFound = () => {
@@ -65,11 +65,11 @@ window.addEventListener("DOMContentLoaded", async () => {
     };
 
     anchor.onTargetLost = () => {
+      scanOverlay.style.display = "flex";
       tablet.visible = false;
       video.pause();
       video.currentTime = 0;
       startBtn.style.display = "none";
-      scanOverlay.style.display = "flex";
     };
 
     startBtn.addEventListener("click", async () => {
@@ -88,7 +88,7 @@ window.addEventListener("DOMContentLoaded", async () => {
         animationProgress += 0.02;
         const eased = easeOutCubic(animationProgress);
         tablet.scale.lerpVectors(initialScale, targetScale, eased);
-        tablet.rotation.z = Math.PI * (1 - eased); // animación giro
+        tablet.rotation.z = Math.PI * (1 - eased);
       }
       renderer.render(scene, camera);
     });
