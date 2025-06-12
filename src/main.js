@@ -3,9 +3,8 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 
 window.addEventListener("DOMContentLoaded", async () => {
   const startBtn = document.getElementById("start-video");
-  startBtn.style.display = "block"; // Mostrar botón desde el inicio
+  startBtn.style.display = "block";
 
-  // Inicializar MindAR
   const mindarThree = new window.MINDAR.IMAGE.MindARThree({
     container: document.querySelector("#ar-container"),
     imageTargetSrc: "./target/moto.mind",
@@ -15,21 +14,19 @@ window.addEventListener("DOMContentLoaded", async () => {
   const { renderer, scene, camera } = mindarThree;
   const anchor = mindarThree.addAnchor(0);
 
-  // Iluminación básica
   scene.add(new THREE.AmbientLight(0xffffff, 1));
   const light = new THREE.DirectionalLight(0xffffff, 0.5);
   light.position.set(1, 2, 1);
   scene.add(light);
 
-  // Cargar modelo de tablet
   const loader = new GLTFLoader();
   loader.load("./assets/tablet.glb", (gltf) => {
     const tablet = gltf.scene;
     tablet.scale.set(0.5, 0.5, 0.5);
 
-    // 🔄 ROTACIÓN para que esté acostada
-    tablet.rotation.x = -Math.PI / 2;
-    tablet.position.set(0, 0.05, 0); // levemente elevada sobre el target
+    // ✅ Corregido: pantalla mirando hacia arriba
+    tablet.rotation.x = Math.PI / 2;
+    tablet.position.set(0, 0.05, 0);
 
     tablet.visible = false;
     anchor.group.add(tablet);
@@ -37,7 +34,6 @@ window.addEventListener("DOMContentLoaded", async () => {
     anchor.onTargetFound = () => (tablet.visible = true);
     anchor.onTargetLost = () => (tablet.visible = false);
 
-    // 🎥 Crear video
     const video = document.createElement("video");
     video.src = "./assets/videomotor.mp4";
     video.crossOrigin = "anonymous";
@@ -46,7 +42,6 @@ window.addEventListener("DOMContentLoaded", async () => {
     video.playsInline = true;
     video.setAttribute("preload", "auto");
 
-    // Esperar que el video cargue para usar como textura
     video.addEventListener("loadeddata", () => {
       const texture = new THREE.VideoTexture(video);
       const material = new THREE.MeshBasicMaterial({
@@ -54,29 +49,26 @@ window.addEventListener("DOMContentLoaded", async () => {
         side: THREE.DoubleSide
       });
 
-      const geometry = new THREE.PlaneGeometry(2.2, 1.2); // Tamaño del video
+      const geometry = new THREE.PlaneGeometry(2.2, 1.2);
       const videoPlane = new THREE.Mesh(geometry, material);
 
-      // ✅ Posicionar el video sobre la tablet (horizontalmente)
-      videoPlane.rotation.x = -Math.PI / 2;
-      videoPlane.position.set(0, 0.12, 0); // Encima de la tablet
+      // ✅ Pantalla también apuntando hacia arriba
+      videoPlane.rotation.x = Math.PI / 2;
+      videoPlane.position.set(0, 0.12, 0);
 
       tablet.add(videoPlane);
 
-      // 📱 En móvil: usar botón
       startBtn.addEventListener("click", () => {
         video.play()
           .then(() => {
             startBtn.style.display = "none";
-            console.log("▶️ Video iniciado");
           })
           .catch((err) => {
-            alert("❌ Error al reproducir video. Toca de nuevo.");
+            alert("Error al reproducir video. Intenta tocar de nuevo.");
             console.error(err);
           });
       });
 
-      // 🖱️ En escritorio: clic directo sobre el video
       document.body.addEventListener("click", (e) => {
         const mouse = new THREE.Vector2(
           (e.clientX / window.innerWidth) * 2 - 1,
@@ -92,7 +84,6 @@ window.addEventListener("DOMContentLoaded", async () => {
     });
   });
 
-  // Iniciar AR
   await mindarThree.start();
   renderer.setAnimationLoop(() => {
     renderer.render(scene, camera);
