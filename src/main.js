@@ -5,6 +5,9 @@ window.addEventListener("DOMContentLoaded", async () => {
   const startBtn = document.getElementById("start-video");
   const scanOverlay = document.getElementById("scan-overlay");
 
+  // 👇 Fuerza ocultar el overlay apenas inicia
+  scanOverlay.style.display = "none";
+
   const mindarThree = new window.MINDAR.IMAGE.MindARThree({
     container: document.querySelector("#ar-container"),
     imageTargetSrc: "./target/moto.mind",
@@ -20,7 +23,7 @@ window.addEventListener("DOMContentLoaded", async () => {
   scene.add(light);
 
   const loader = new GLTFLoader();
-  loader.load("./assets/tab1.glb", (gltf) => {
+  loader.load("./assets/tablet.glb", (gltf) => {
     const tablet = gltf.scene;
     tablet.scale.set(0.01, 0.01, 0.01); // Animación: inicia pequeño
     tablet.rotation.set(Math.PI / 2, Math.PI, 0);
