@@ -39,29 +39,24 @@ window.addEventListener("DOMContentLoaded", async () => {
     video.playsInline = true;
     video.setAttribute("preload", "auto");
 
-
-    // Crear material negro inicialmente
-/*const blackMaterial = new THREE.MeshBasicMaterial({ color: 0x000000 });
-const geometry = new THREE.PlaneGeometry(2.2, 1.2);
-const videoPlane = new THREE.Mesh(geometry, blackMaterial);
-videoPlane.rotation.x = Math.PI / 2;
-videoPlane.scale.x = -1;
-videoPlane.position.set(0, 0.12, 0);
-tablet.add(videoPlane);
-
-// Cuando se reproduzca el video, reemplazar el material
-video.addEventListener("play", () => {
-  const texture = new THREE.VideoTexture(video);
-  texture.encoding = THREE.sRGBEncoding;
-  videoPlane.material = new THREE.MeshBasicMaterial({ map: texture, side: THREE.DoubleSide });
-});*/
-
     
-    const texture = new THREE.VideoTexture(video);
+/* primero textura    
+const texture = new THREE.VideoTexture(video);
     texture.encoding = THREE.sRGBEncoding;
 
     const material = new THREE.MeshBasicMaterial({ map: texture, side: THREE.DoubleSide });
-    //const geometry = new THREE.PlaneGeometry(2.2, 1.2);
+
+    */
+
+    // Imagen de portada como textura inicial
+    const posterTexture = new THREE.TextureLoader().load("./assets/poster.jpg");
+    const material = new THREE.MeshBasicMaterial({ map: posterTexture, side: THREE.DoubleSide });
+
+    const texture = new THREE.VideoTexture(video);
+    texture.encoding = THREE.sRGBEncoding;
+
+
+
     const geometry = new THREE.PlaneGeometry(2.5, 1.4);
     const videoPlane = new THREE.Mesh(geometry, material);
     videoPlane.rotation.x = Math.PI / 2;
@@ -72,7 +67,7 @@ video.addEventListener("play", () => {
     // Animación de aparición
     let animating = false;
     let animationProgress = 0;
-    const targetScale = new THREE.Vector3(0.5, 0.5, 0.5);
+    const targetScale = new THREE.Vector3(0.7, 0.7, 0.7);
     const initialScale = new THREE.Vector3(0.01, 0.01, 0.01);
     const easeOutCubic = (t) => (--t) * t * t + 1;
 
@@ -102,11 +97,27 @@ video.addEventListener("play", () => {
     
   
 
+    /*textura
     startBtn.addEventListener("click", async () => {
       try {
         await video.play();
         video.muted = false;
         startBtn.style.display = "none";
+      } catch (err) {
+        alert("Toca nuevamente para iniciar el video.");
+        console.error(err);
+      }
+    });*/
+
+    startBtn.addEventListener("click", async () => {
+      try {
+        await video.play();
+        video.muted = false;
+        startBtn.style.display = "none";
+    
+        // Reemplazar el material del videoPlane con el del video
+        videoPlane.material.map = texture;
+        videoPlane.material.needsUpdate = true;
       } catch (err) {
         alert("Toca nuevamente para iniciar el video.");
         console.error(err);
