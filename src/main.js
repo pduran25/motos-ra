@@ -23,7 +23,7 @@ window.addEventListener("DOMContentLoaded", async () => {
   scene.add(light);
 
   const loader = new GLTFLoader();
-  loader.load("./assets/tablet.glb", (gltf) => {
+  loader.load("./assets/tb1.glb", (gltf) => {
     const tablet = gltf.scene;
     tablet.scale.set(0.01, 0.01, 0.01); // Animación: inicia pequeño
     tablet.rotation.set(Math.PI / 2, Math.PI, 0);
@@ -56,15 +56,17 @@ video.addEventListener("play", () => {
   videoPlane.material = new THREE.MeshBasicMaterial({ map: texture, side: THREE.DoubleSide });
 });*/
 
+    
     const texture = new THREE.VideoTexture(video);
     texture.encoding = THREE.sRGBEncoding;
 
     const material = new THREE.MeshBasicMaterial({ map: texture, side: THREE.DoubleSide });
-    const geometry = new THREE.PlaneGeometry(2.2, 1.2);
+    //const geometry = new THREE.PlaneGeometry(2.2, 1.2);
+    const geometry = new THREE.PlaneGeometry(2.5, 1.4);
     const videoPlane = new THREE.Mesh(geometry, material);
     videoPlane.rotation.x = Math.PI / 2;
     videoPlane.scale.x = -1;
-    videoPlane.position.set(0, 0.12, 0);
+    videoPlane.position.set(0, 0.25, 0);
     tablet.add(videoPlane);
 
     // Animación de aparición
