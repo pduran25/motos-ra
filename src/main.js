@@ -73,7 +73,7 @@ const texture = new THREE.VideoTexture(video);
 
     let targetHasBeenSeen = false;
 
-    anchor.onTargetFound = () => {
+   /* anchor.onTargetFound = () => {
       scanOverlay.style.display = "none";
       tablet.visible = true;
       animationProgress = 0;
@@ -82,7 +82,24 @@ const texture = new THREE.VideoTexture(video);
       if (video.paused || video.ended) {
         startBtn.style.display = "block";
       }
+    };*/
+
+    anchor.onTargetFound = () => {
+      scanOverlay.style.display = "none";
+      tablet.visible = true;
+      animationProgress = 0;
+      animating = true;
+      targetHasBeenSeen = true;
+    
+      // Reproduce automáticamente si ya se había iniciado antes
+      if (!video.paused && !video.ended) {
+        video.play();
+        startBtn.style.display = "none";
+      } else {
+        startBtn.style.display = "block";
+      }
     };
+    
   
     anchor.onTargetLost = () => {
       tablet.visible = false;
