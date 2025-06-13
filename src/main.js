@@ -34,7 +34,7 @@ window.addEventListener("DOMContentLoaded", async () => {
     const video = document.createElement("video");
     video.src = "./assets/videomotor.mp4";
     video.crossOrigin = "anonymous";
-    video.loop = false;
+    video.loop = true;
     video.muted = true;
     video.playsInline = true;
     video.setAttribute("preload", "auto");
@@ -73,7 +73,7 @@ const texture = new THREE.VideoTexture(video);
 
     let targetHasBeenSeen = false;
 
-   /* anchor.onTargetFound = () => {
+    anchor.onTargetFound = () => {
       scanOverlay.style.display = "none";
       tablet.visible = true;
       animationProgress = 0;
@@ -82,9 +82,9 @@ const texture = new THREE.VideoTexture(video);
       if (video.paused || video.ended) {
         startBtn.style.display = "block";
       }
-    };*/
+    };
 
-    anchor.onTargetFound = () => {
+    /*anchor.onTargetFound = () => {
       scanOverlay.style.display = "none";
       tablet.visible = true;
       animationProgress = 0;
@@ -98,7 +98,7 @@ const texture = new THREE.VideoTexture(video);
       } else {
         startBtn.style.display = "block";
       }
-    };
+    };*/
     
   
     anchor.onTargetLost = () => {
