@@ -86,11 +86,21 @@
     }
 
     #start-video {
-      bottom: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      display: none;
-    }
+  position: absolute; /* CAMBIADO de fixed a absolute */
+  top: 80px; /* Justo debajo del label */
+  left: 50%;
+  transform: translateX(-50%);
+  display: none;
+  z-index: 9999;
+  padding: 10px 16px;
+  font-size: 16px;
+  border: 2px solid white;
+  background: rgba(0, 0, 0, 0.6);
+  color: white;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
 
     #back-button {
   top: 15px;
