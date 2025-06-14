@@ -25,6 +25,11 @@ window.addEventListener("DOMContentLoaded", async () => {
   const backButton = document.getElementById("back-button");
   const scanOverlay = document.getElementById("scan-overlay");
 
+  const isAndroid = /Android/i.test(navigator.userAgent);
+  if (isAndroid) {
+    startBtn.style.bottom = "8%"; // o ajusta a "10%" si quieres más alto
+  }
+
   if (!selectedMoto) {
     landing.style.display = "flex";
     arContainer.style.display = "none";
