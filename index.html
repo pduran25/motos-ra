@@ -86,11 +86,20 @@
     }
 
     #start-video {
-      bottom: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      display: none;
-    }
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%);
+  display: none;
+  padding: 10px 16px;
+  font-size: 16px;
+  border: 2px solid white;
+  background: rgba(0, 0, 0, 0.6);
+  color: white;
+  border-radius: 8px;
+  cursor: pointer;
+  z-index: 9999;
+  bottom: env(safe-area-inset-bottom, 15px); /* respeta notch o barra inferior */
+}
 
     #back-button {
   top: 15px;
