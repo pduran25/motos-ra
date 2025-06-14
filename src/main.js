@@ -25,10 +25,6 @@ window.addEventListener("DOMContentLoaded", async () => {
   const backButton = document.getElementById("back-button");
   const scanOverlay = document.getElementById("scan-overlay");
 
-  const isAndroid = /Android/i.test(navigator.userAgent);
-  if (isAndroid) {
-    startBtn.style.bottom = "8%"; // o ajusta a "10%" si quieres más alto
-  }
 
   if (!selectedMoto) {
     landing.style.display = "flex";
@@ -74,12 +70,20 @@ window.addEventListener("DOMContentLoaded", async () => {
 
     const video = document.createElement("video");
     video.src = `./assets/videomotor${selectedMoto}.mp4`;
+
     video.crossOrigin = "anonymous";
     video.loop = true;
     video.muted = true;
     video.playsInline = true;
     video.setAttribute("preload", "auto");
+    video.setAttribute("playsinline", "");
+    video.load(); // Forzar carga anticipada
 
+    // Captura de errores al cargar el video
+    video.addEventListener("error", (e) => {
+      console.error("Error cargando el video:", video.src, e);
+      alert("Hubo un problema al cargar el video. Intenta con otra moto.");
+    });
     const posterTexture = new THREE.TextureLoader().load(`./assets/poster${selectedMoto}.jpg`);
     const material = new THREE.MeshBasicMaterial({ map: posterTexture, side: THREE.DoubleSide });
 
