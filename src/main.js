@@ -98,7 +98,7 @@ window.addEventListener("DOMContentLoaded", async () => {
 
     anchor.onTargetFound = () => {
       scanOverlay.style.display = "none";
-      startBtn.style.top = '30px';
+      startBtn.style.marginBottom = '30px';
       tablet.visible = true;
       animationProgress = 0;
       animating = true;
