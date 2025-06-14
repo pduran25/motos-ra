@@ -82,7 +82,7 @@ window.addEventListener("DOMContentLoaded", async () => {
     // Captura de errores al cargar el video
     video.addEventListener("error", (e) => {
       console.error("Error cargando el video:", video.src, e);
-      alert("Hubo un problema al cargar el video. Intenta con otra moto.");
+     // alert("Hubo un problema al cargar el video. Intenta con otra moto.");
     });
     const posterTexture = new THREE.TextureLoader().load(`./assets/poster${selectedMoto}.jpg`);
     const material = new THREE.MeshBasicMaterial({ map: posterTexture, side: THREE.DoubleSide });
