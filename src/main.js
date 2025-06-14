@@ -96,7 +96,7 @@ window.addEventListener("DOMContentLoaded", async () => {
 
     let targetHasBeenSeen = false;
 
-    anchor.onTargetFound = () => {
+   /* anchor.onTargetFound = () => {
       scanOverlay.style.display = "none";
       tablet.visible = true;
       animationProgress = 0;
@@ -105,7 +105,34 @@ window.addEventListener("DOMContentLoaded", async () => {
       if (video.paused || video.ended) {
         startBtn.style.display = "block";
       }
+    };*/
+
+    anchor.onTargetFound = () => {
+      scanOverlay.style.display = "none";
+      tablet.visible = true;
+      animationProgress = 0;
+      animating = true;
+      targetHasBeenSeen = true;
+    
+      if (video.paused || video.ended) {
+        startBtn.style.display = "block";
+    
+        // Solo en Android, cambiar posición
+        if (isAndroid()) {
+          startBtn.style.position = 'absolute';
+          startBtn.style.top = '80px';
+          startBtn.style.left = '50%';
+          startBtn.style.transform = 'translateX(-50%)';
+        } else {
+          // Asegurar la posición original en otros dispositivos
+          startBtn.style.position = 'relative';
+          startBtn.style.top = 'auto';
+          startBtn.style.left = 'auto';
+          startBtn.style.transform = 'none';
+        }
+      }
     };
+    
 
     anchor.onTargetLost = () => {
       tablet.visible = false;
