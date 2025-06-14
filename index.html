@@ -86,8 +86,8 @@
     }
 
     #start-video {
-  position: absolute; /* CAMBIADO de fixed a absolute */
-  top: 60%; /* Justo debajo del label */
+  position: absolute;
+  top: calc(100% - 100px); /* Aparece justo encima del borde inferior */
   left: 50%;
   transform: translateX(-50%);
   display: none;
@@ -100,6 +100,7 @@
   border-radius: 8px;
   cursor: pointer;
 }
+
 
     #back-button {
   top: 15px;
