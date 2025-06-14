@@ -36,6 +36,7 @@ window.addEventListener("DOMContentLoaded", async () => {
     landing.style.display = "none";
     arContainer.style.display = "block";
     backButton.style.display = "block";
+    startBtn.style.display = "block";
   }
 
   backButton.addEventListener("click", () => {
@@ -117,7 +118,7 @@ window.addEventListener("DOMContentLoaded", async () => {
       }
     };
 
-   /* startBtn.addEventListener("click", async () => {
+    startBtn.addEventListener("click", async () => {
       try {
         await video.play();
         video.muted = false;
@@ -128,45 +129,9 @@ window.addEventListener("DOMContentLoaded", async () => {
         alert("Toca nuevamente para iniciar el video.");
         console.error(err);
       }
-    });*/
-
-    /**** */
-    const iniciarVideo = async () => {
-      try {
-        if (video.paused || video.ended) {
-          video.muted = true;
-          await video.play();
-          video.muted = false;
-          startBtn.style.display = "none";
-          videoPlane.material.map = texture;
-          videoPlane.material.needsUpdate = true;
-        }
-      } catch (err) {
-        alert("Toca nuevamente para iniciar el video.");
-        console.error("Error al iniciar el video:", err);
-      }
-    };
-    
-    startBtn.addEventListener("click", iniciarVideo);
-    
-    // Extra: permite iniciar video tocando el plano
-    videoPlane.userData.interactive = true;
-    videoPlane.callback = iniciarVideo;
-    videoPlane.cursor = 'pointer'; // opcional si usas raycaster
-    
-    videoPlane.onClick = iniciarVideo;
-    videoPlane.addEventListener?.("click", iniciarVideo); // por compatibilidad
-    videoPlane.on("click", iniciarVideo); // en caso uses alguna librería con eventos
-    
-    // Alternativa básica con raycaster si no funciona:
-    arContainer.addEventListener("click", async (e) => {
-      if (tablet.visible && video.paused) {
-        await iniciarVideo();
-      }
     });
-    
 
-    /**** */
+   
 
     renderer.setAnimationLoop(() => {
       if (animating && animationProgress < 1) {
