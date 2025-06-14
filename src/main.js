@@ -36,7 +36,6 @@ window.addEventListener("DOMContentLoaded", async () => {
     landing.style.display = "none";
     arContainer.style.display = "block";
     backButton.style.display = "block";
-    startBtn.style.display = "block";
   }
 
   backButton.addEventListener("click", () => {
