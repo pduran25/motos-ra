@@ -103,7 +103,7 @@ window.addEventListener("DOMContentLoaded", async () => {
 
     let animating = false;
     let animationProgress = 0;
-    const targetScale = new THREE.Vector3(1, 1, 1);
+    const targetScale = new THREE.Vector3(0.85, 0.85, 0.85);
     const initialScale = new THREE.Vector3(0.03, 0.03, 0.03);
     const easeOutCubic = (t) => (--t) * t * t + 1;
 
