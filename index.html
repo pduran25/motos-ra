@@ -86,11 +86,14 @@
     }
 
     #start-video {
-      bottom: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      display: none;
-    }
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: none;
+  pointer-events: auto; /* <-- Añadir esto */
+  z-index: 10000; /* <-- Asegúrate que sea mayor al canvas */
+}
+
 
     #back-button {
   top: 15px;
