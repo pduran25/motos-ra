@@ -48,7 +48,9 @@ window.addEventListener("DOMContentLoaded", async () => {
   const mindarThree = new window.MINDAR.IMAGE.MindARThree({
     container: arContainer,
     imageTargetSrc: `./target/motocodigo${selectedMoto}.mind`,
-    maxTrack: 1
+    maxTrack: 1,
+    filterMinCF: 0.0001,  // sensibilidad
+    filterBeta: 0.01      // suavizado de movimiento
   });
 
   const { renderer, scene, camera } = mindarThree;
@@ -62,11 +64,13 @@ window.addEventListener("DOMContentLoaded", async () => {
   const loader = new GLTFLoader();
   loader.load("./assets/tb1.glb", (gltf) => {
     const tablet = gltf.scene;
-    tablet.scale.set(0.01, 0.01, 0.01);
+    tablet.scale.set(0.03, 0.03, 0.03);
     tablet.rotation.set(Math.PI / 2, Math.PI, 0);
-    tablet.position.set(0, 0.05, 0);
+    tablet.position.set(0, 0.02, 0);
     tablet.visible = false;
     anchor.group.add(tablet);
+    anchor.group.matrixAutoUpdate = false;
+
 
     const video = document.createElement("video");
     video.src = `./assets/videomotor${selectedMoto}.mp4`;
@@ -99,8 +103,8 @@ window.addEventListener("DOMContentLoaded", async () => {
 
     let animating = false;
     let animationProgress = 0;
-    const targetScale = new THREE.Vector3(0.7, 0.7, 0.7);
-    const initialScale = new THREE.Vector3(0.01, 0.01, 0.01);
+    const targetScale = new THREE.Vector3(1, 1, 1);
+    const initialScale = new THREE.Vector3(0.03, 0.03, 0.03);
     const easeOutCubic = (t) => (--t) * t * t + 1;
 
     let targetHasBeenSeen = false;
