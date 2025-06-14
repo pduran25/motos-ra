@@ -2,89 +2,197 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <title>AR Tablet Interactiva</title>
-  <link rel="icon" href="data:,">
+  <title>MOTOS TVS</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" href="data:,">
   <style>
     html, body {
-      margin: 0; padding: 0; overflow: hidden; width: 100%; height: 100%; background: #000;
+  margin: 0;
+  padding: 0;
+  width: 100vw;
+  height: 100vh;
+  font-family: sans-serif;
+  overflow: hidden;
+  background: #000; /* Negro por defecto (solo se verá en caso de error) */
+}
+
+#landing {
+  background: url('./assets/fondo.png') no-repeat center center fixed;
+  background-size: cover;
+  position: absolute;
+  z-index: 10;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow-y: auto;
+}
+
+    #logo {
+      width: 300px;
+      max-width: 90%;
+      margin-top: 30px;
+      margin-bottom: 40px;
+    }
+
+    .moto-grid {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 20px;
+      width: 100%;
+      max-width: 1000px;
+    }
+
+    .moto-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      transition: transform 0.3s;
+      max-width: 240px;
+      width: 100%;
+    }
+
+    .moto-btn:hover {
+      transform: scale(1.05);
+    }
+
+    .moto-btn img {
+      width: 100%;
+      height: auto;
+      display: block;
     }
 
     #ar-container {
-      width: 100vw;
-      height: 100vh;
-      position: relative;
-      z-index: 0;
+  position: absolute;
+  top: 0; left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 1;
+}
+
+    #start-video, #back-button {
+      position: fixed;
+      z-index: 9999;
+      padding: 10px 16px;
+      font-size: 16px;
+      border: 2px solid white;
+      background: rgba(0, 0, 0, 0.6);
+      color: white;
+      border-radius: 8px;
+      cursor: pointer;
     }
 
     #start-video {
-      position: fixed;
       bottom: 20px;
       left: 50%;
       transform: translateX(-50%);
-      padding: 16px 24px;
-      font-size: 18px;
-      background: #111;
-      color: #fff;
-      border: 2px solid white;
-      border-radius: 8px;
-      z-index: 9999;
+      display: none;
+    }
+
+    #back-button {
+      top: 20px;
+      left: 20px;
       display: none;
     }
 
     .mindar-ui-overlay {
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      display: none; /* ✅ Esto lo oculta inicialmente */
-      align-items: center;
-      justify-content: center;
-      z-index: 9998;
-      pointer-events: none;
-    }
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 9998;
+    pointer-events: none;
+  }
 
+  .mindar-ui-overlay .scanning {
+  width: 150px;
+  height: 150px;
+  border: 3px solid white;
+  border-radius: 8px;
+  animation: pulse 2s infinite;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.3);
+}
 
-    .mindar-ui-overlay .scanning {
-      width: 150px;
-      height: 150px;
-      border: 3px solid white;
-      border-radius: 8px;
-      animation: pulse 2s infinite;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
+.mindar-ui-overlay .scanning .inner {
+  width: 60%;
+  height: 10%;
+  background: white;
+  animation: updown 1s infinite;
+}
 
-    .mindar-ui-overlay .scanning .inner {
-      width: 60%;
-      height: 10%;
-      background: white;
-      animation: updown 1s infinite;
-    }
+@keyframes pulse {
+  0% { opacity: 0.4; }
+  50% { opacity: 1; }
+  100% { opacity: 0.4; }
+}
 
-    @keyframes pulse {
-      0% { opacity: 0.4; }
-      50% { opacity: 1; }
-      100% { opacity: 0.4; }
-    }
+@keyframes updown {
+  0% { transform: translateY(-20px); }
+  50% { transform: translateY(20px); }
+  100% { transform: translateY(-20px); }
+}
 
-    @keyframes updown {
-      0% { transform: translateY(-20px); }
-      50% { transform: translateY(20px); }
-      100% { transform: translateY(-20px); }
+    @media (max-width: 480px) {
+      #logo {
+        width: 220px;
+        margin-bottom: 20px;
+      }
+      .moto-grid {
+        gap: 16px;
+      }
     }
   </style>
 </head>
 <body>
+
+  <div id="landing">
+    <img src="./assets/logotipo.png" alt="TVS Logo" id="logo" />
+    <div class="moto-grid">
+      <button class="moto-btn" onclick="location.href='?moto=1'">
+        <img src="./assets/videoapache160.png" alt="Apache 160 FI" />
+      </button>
+      <button class="moto-btn" onclick="location.href='?moto=2'">
+        <img src="./assets/videoapache200.png" alt="Apache 200 FI" />
+      </button>
+      <button class="moto-btn" onclick="location.href='?moto=3'">
+        <img src="./assets/videosport100.png" alt="Sport 100" />
+      </button>
+      <button class="moto-btn" onclick="location.href='?moto=4'">
+        <img src="./assets/videoraider125.png" alt="Raider 125" />
+      </button>
+      <button class="moto-btn" onclick="location.href='?moto=5'">
+        <img src="./assets/videostryker125.png" alt="Stryker 125" />
+      </button>
+    </div>
+  </div>
+
   <div id="ar-container"></div>
 
-  <!-- Overlay escaneo -->
-  <div class="mindar-ui-overlay" id="scan-overlay">
+  <button id="start-video">▶️ Iniciar video</button>
+  <button id="back-button">← Volver</button>
+
+  <div class="mindar-ui-overlay" id="scan-overlay" style="display: none;">
     <div class="scanning">
       <div class="inner"></div>
     </div>
   </div>
 
-  <button id="start-video">▶️ Iniciar video</button>
+  <img id="moto-label" src="" alt="Moto actual" style="
+  position: fixed;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  max-width: 200px;
+  z-index: 9999;
+  display: none;"/>
+
 
   <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.1.4/dist/mindar-image-three.prod.js"></script>
   <script type="module" src="/src/main.js"></script>
